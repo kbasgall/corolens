@@ -20,13 +20,24 @@ namespace org.doublecloud
 
             //Console.WriteLine(vital_values.Count);
 
-            for(int i = 0; i < vital_values.Count; ++i){
-              Console.Write(display_names[i].Attributes["displayName"].Value);
-              Console.Write(" ");
-              Console.Write(vital_values[i].Attributes["value"].Value);
-              Console.Write(" ");
-              Console.Write(vital_values[i].Attributes["unit"].Value);
-              Console.WriteLine("");
+            IDictionary<string, string> dict = new Dictionary<string, string>();
+
+            for(int i = 0; i < vital_values.Count; ++i) {
+                dict.Add(display_names[i].Attributes["displayName"].Value, vital_values[i].Attributes["value"].Value + " " + vital_values[i].Attributes["unit"].Value);
+            
+                /*Console.Write(display_names[i].Attributes["displayName"].Value);
+                Console.Write(" ");
+                Console.Write(vital_values[i].Attributes["value"].Value);
+                Console.Write(" ");
+                Console.Write(vital_values[i].Attributes["unit"].Value);
+                Console.WriteLine("");*/
+            }
+
+            foreach(KeyValuePair<string, string> entry in dict) {
+                Console.Write(entry.Key);
+                Console.Write(" ");
+                Console.Write(entry.Value);
+                Console.WriteLine("");
             }
         }
     }
