@@ -4,47 +4,49 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Xml;
-using System.Xml.Linq;
 
 public class Listener
 {
-    private static Socket CreateSocket(int ip_addr, int port)
+    private static Socket CreateSocket(System.Net.IPAddress ip_addr, int port)
     {
-        Socket s = Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-        s.Connect(System.Net.IPAddress(ip_addr), port);
+        Socket s = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
+        s.Connect(ip_addr, port);
         if (!s.Connected)
         {
             Console.WriteLine("Socket didn't connect.");
-            throw SocketError();
         }
         return s;
     }
 
-    private static RecvData(Socket s)
+    private static XmlDocument RecvData(Socket s)
     {
+        Byte[] bytes = new Byte[256];
         XmlDocument doc = new XmlDocument();
-        string xml;
+        string data = "";
+        int num_bytes_recv;
         do
         {
-            int num_bytes_recv = s.Receive(bytes);
-            xml += Encoding.UTF8.GetString(bytesReceived, 0, bytes);
+            num_bytes_recv = s.Receive(bytes);
+            data += Encoding.UTF8.GetString(bytes, 0, num_bytes_recv);
         } while (num_bytes_recv > 0);
 
-        doc.LoadXml(xml);
+        doc.LoadXml(data);
+
+        return doc;
     }
 
     public static void Main(string[] args)
     {
-        System.Net.IPAddress ip_addr;
-        int port = 0;
+        System.Net.IPAddress ip_addr = IPAddress.Parse("127.0.0.1");
+        int port = 8000;
         try
         {
             Socket s = CreateSocket(ip_addr, port);
-            RecvData(s);
+            XmlDocument resp = RecvData(s);
         }
-        catch(SocketError)
+        catch(SocketException e)
         {
-            exit(1);
+            Console.WriteLine(e);
         }
     }
 }
