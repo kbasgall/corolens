@@ -3,6 +3,8 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Xml;
+using System.Xml.Linq;
 
 public class Listener
 {
@@ -20,14 +22,15 @@ public class Listener
 
     private static RecvData(Socket s)
     {
-        Byte[] bytes = new Byte[256];
-        string data;
+        XmlDocument doc = new XmlDocument();
+        string xml;
         do
         {
             int num_bytes_recv = s.Receive(bytes);
-            data += Encoding.ASCII.GetString(bytesReceived, 0, bytes);
+            xml += Encoding.UTF8.GetString(bytesReceived, 0, bytes);
         } while (num_bytes_recv > 0);
 
+        doc.LoadXml(xml);
     }
 
     public static void Main(string[] args)
