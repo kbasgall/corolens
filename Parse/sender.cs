@@ -3,18 +3,17 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text.Encoding;
 using System.Xml.Linq;
+using System.Xml;
 
 public class Sender {
-	private static Socket CreateSocket(int ip_addr, int port)
+	private static Socket CreateSocket(System.Net.IPAddress ip_addr, int port)
     {
-        Socket s = Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-        s.Connect(System.Net.IPAddress(ip_addr), port);
+        Socket s = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
+        s.Connect(ip_addr, port);
         if (!s.Connected)
         {
             Console.WriteLine("Socket didn't connect.");
-            throw SocketError();
         }
         return s;
     }
@@ -26,11 +25,11 @@ public class Sender {
 
     	try {
     		int bytesSent = s.Send(message);
-    		s.close();
+    		s.Close();
     	}
     	catch (SocketException e) {
 	        Console.WriteLine("{0} Error code: {1}.", e.Message, e.ErrorCode);
-	        return (e.ErrorCode);
+	        System.Environment.Exit(1);
     	}
     }
 
@@ -52,16 +51,20 @@ public class Sender {
 
     public static void Main(string[] args)
     {
-        System.Net.IPAddress ip_addr;
-        int port = 0;
+        System.Net.IPAddress ip_addr = System.Net.IPAddress.Parse("127.0.0.1");
+        int port = 8000;
+
+        XDocument xml = XDocument.Load("originalv3Message.xml");
+
         try
         {
             Socket s = CreateSocket(ip_addr, port);
-            RecvData(s);
+            SendData(s, xml);
         }
-        catch(SocketError)
+        catch(SocketException e)
         {
-            exit(1);
+        	Console.WriteLine(e);
+            System.Environment.Exit(1);
         }
     }
 }
