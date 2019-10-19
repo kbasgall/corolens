@@ -23,9 +23,9 @@ public class Sender {
     	byte[] message = ConvertXmlToByteArray(xml, utf8);
     	byte[] bytes = new byte[256]; // for recieving
 
-    	try {
-    		int bytesSent = s.Send(message);
-    		s.Close();
+    	try {		
+			int bytesSent = s.Send(message);
+			s.Close();
     	}
     	catch (SocketException e) {
 	        Console.WriteLine("{0} Error code: {1}.", e.Message, e.ErrorCode);
