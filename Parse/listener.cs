@@ -20,9 +20,9 @@ public class Listener
 
     private static XmlDocument RecvData(Socket s)
     {
-        Byte[] bytes = new Byte[256];
+        Byte[] bytes = new Byte[1024];
         XmlDocument doc = new XmlDocument();
-        string data = "";
+        string data = null;
         int num_bytes_recv;
         do
         {
@@ -37,8 +37,8 @@ public class Listener
 
     public static void Main(string[] args)
     {
-        System.Net.IPAddress ip_addr = IPAddress.Parse("127.0.0.1");
-        int port = 8000;
+        System.Net.IPAddress ip_addr = IPAddress.Parse("35.2.222.117");
+        int port = 5000;
         try
         {
             Socket s = CreateSocket(ip_addr, port);

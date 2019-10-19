@@ -51,8 +51,8 @@ public class Sender {
 
     public static void Main(string[] args)
     {
-        System.Net.IPAddress ip_addr = System.Net.IPAddress.Parse("127.0.0.1");
-        int port = 8000;
+        System.Net.IPAddress ip_addr = System.Net.IPAddress.Parse("35.2.222.117");
+        int port = 60010;
 
         XDocument xml = XDocument.Load("originalv3Message.xml");
 

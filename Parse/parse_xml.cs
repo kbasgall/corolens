@@ -9,7 +9,7 @@ namespace org.doublecloud
         static void Main(string[] args)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(@"originalv3Message.xml");
+            doc.Load(@"data.xml");
 
             XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
 
@@ -21,8 +21,8 @@ namespace org.doublecloud
             IDictionary<string, string> dict = new Dictionary<string, string>();
 
 
-        
-            for(int i = 0; i < vital_values.Count; ++i) { 
+
+            for(int i = 0; i < vital_values.Count; ++i) {
 
                 if (display_names[i].Attributes["displayName"].Value == "Body temperature") {
                     double celcius = Double.Parse(vital_values[i].Attributes["value"].Value);
