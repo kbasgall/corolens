@@ -6,9 +6,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    <Grid>
-
-    </Grid>
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" d:DesignWidth="3011.388" d:DesignHeight="1641.342"
+    
+>
+    <StackPanel Margin="20">
+        <TextBlock Name="heartrate" TextWrapping="Wrap" FontSize="100"  Foreground="#FFC200CB">
+            <Run Text="{Binding Textdata}"/>
+            <Run Text="bpm" FontSize="20"/>
+        </TextBlock>
+        <TextBlock Name="blood_pressure" TextWrapping="Wrap" FontSize="100" Foreground="#FFF39320">
+            <Run Text="{Binding Textdata}"/>
+            <Run Text="mmHg" FontSize="20"/>
+        </TextBlock>
+        <TextBlock Name="oxygen_level" TextWrapping="Wrap" FontSize="100" Foreground="#FF2ED813">
+            <Run Text="{Binding Textdata}"/>
+            <Run Text="%" FontSize="20"/>
+        </TextBlock>
+        <TextBlock Name="temperature" TextWrapping="Wrap" FontSize="100" Foreground="#FF0CA5DE">
+            <Run Text="{Binding Textdata}"/>
+            <Run Text="°F" FontSize="20"/>
+        </TextBlock>
+    </StackPanel>
 </Page>
