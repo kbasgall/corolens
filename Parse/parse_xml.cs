@@ -20,8 +20,21 @@ namespace org.doublecloud
 
             IDictionary<string, string> dict = new Dictionary<string, string>();
 
-            for(int i = 0; i < vital_values.Count; ++i) {
-                dict.Add(display_names[i].Attributes["displayName"].Value, vital_values[i].Attributes["value"].Value + " " + vital_values[i].Attributes["unit"].Value);
+
+        
+            for(int i = 0; i < vital_values.Count; ++i) { 
+
+                if (display_names[i].Attributes["displayName"].Value == "Body temperature") {
+                    double celcius = Double.Parse(vital_values[i].Attributes["value"].Value);
+                    double temp = ((celcius * 9) / 5) + 32;
+                    string strValue = temp.ToString("N2");
+
+                    dict.Add(display_names[i].Attributes["displayName"].Value, strValue);
+
+                }
+                else {
+                    dict.Add(display_names[i].Attributes["displayName"].Value, vital_values[i].Attributes["value"].Value);
+                }
             }
 
             foreach(KeyValuePair<string, string> entry in dict) {
