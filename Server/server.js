@@ -31,9 +31,9 @@ wss.on('connection', (ws) => {
     else {
         console.log(`Accepted connection ${connectionId}`);
     }
-    
+
     // handler for receiving a message on the socket
-    ws.on('message', (message) => {        
+    ws.on('message', (message) => {
         wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === ws.OPEN) {
                 client.send(message);
