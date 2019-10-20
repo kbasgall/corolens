@@ -45,7 +45,8 @@ namespace Vitals
             oxygen_level.DataContext = new TextboxText() { Textdata = oxygen_val };
             temperature.DataContext = new TextboxText() { Textdata = temperature_val };
 
-            SimulateServer();
+
+            //SimulateServer();
             //ExecuteServer();
         }
 

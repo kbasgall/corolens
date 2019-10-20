@@ -8,6 +8,9 @@
     mc:Ignorable="d" d:DesignWidth="3011.388" d:DesignHeight="1641.342"
     
 >
+    <Page.Background>
+        <AcrylicBrush BackgroundSource="HostBackdrop"/>
+    </Page.Background>
     <StackPanel Margin="20">
         <TextBlock Name="heartrate" TextWrapping="Wrap" FontSize="100"  Foreground="#FFC200CB">
             <Run Text="{Binding Textdata}"/>
