@@ -5,8 +5,7 @@
     xmlns:local="using:Vitals"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" d:DesignWidth="3011.388" d:DesignHeight="1641.342"
+    mc:Ignorable="d" d:DesignWidth="3011.388" d:DesignHeight="1641.342"
     
 >
     <StackPanel Margin="20">

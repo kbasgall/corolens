@@ -14,7 +14,10 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Xml;
 using System.Threading;
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Diagnostics;
 
 namespace Vitals
 {
@@ -36,18 +39,112 @@ namespace Vitals
         public MainPage()
         {
             this.InitializeComponent();
+            Debug.WriteLine("Hello");
             blood_pressure.DataContext = new TextboxText() { Textdata = systolic_blood_pressure_val + "/" + diastolic_blood_pressure_val };
             heartrate.DataContext = new TextboxText() { Textdata = heartrate_val };
             oxygen_level.DataContext = new TextboxText() { Textdata = oxygen_val };
             temperature.DataContext = new TextboxText() { Textdata = temperature_val };
 
-            ParseDataFromSocket();
+            SimulateServer();
+            //ExecuteServer();
         }
 
-        public void ParseDataFromSocket()
+        public void SimulateServer()
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(@"originalv3Message.xml");
+            String[] docs = { "patient_data1.xml", "patient_data2.xml", "patient_data3.xml", "patient_data4.xml" };
+            int i = 0;
+            while (true)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(@docs[i]);
+                ParseDataFromSocket(doc);
+
+                Thread.Sleep(500);
+
+                if (i == 3) i = 0;
+                else i++;
+            }
+        }
+
+        public void ExecuteServer()
+        {
+            // Establish the local endpoint
+            // for the socket. Dns.GetHostName
+            // returns the name of the host
+            // running the application.
+            IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddr = ipHost.AddressList[0];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
+
+            // Creation TCP/IP Socket using
+            // Socket Class Costructor
+            Socket listener = new Socket(ipAddr.AddressFamily,
+                        SocketType.Stream, ProtocolType.Tcp);
+
+            try
+            {
+
+                // Using Bind() method we associate a
+                // network address to the Server Socket
+                // All client that will connect to this
+                // Server Socket must know this network
+                // Address
+                listener.Bind(localEndPoint);
+
+                // Using Listen() method we create
+                // the Client list that will want
+                // to connect to Server
+                listener.Listen(10);
+
+                while (true)
+                {
+
+                    Debug.WriteLine("Waiting connection ... ");
+
+                    // Suspend while waiting for
+                    // incoming connection Using
+                    // Accept() method the server
+                    // will accept connection of client
+                    Socket clientSocket = listener.Accept();
+
+                    // Data buffer
+                    XmlDocument doc = new XmlDocument();
+                    byte[] bytes = new Byte[1024];
+                    string data = null;
+
+                    while (true)
+                    {
+
+                        int numByte = clientSocket.Receive(bytes);
+
+                        data += Encoding.UTF8.GetString(bytes,
+                                                0, numByte);
+
+                        if (numByte == 0)
+                            break;
+                    }
+
+                    doc.LoadXml(data);
+                    ParseDataFromSocket(doc);
+                    Debug.WriteLine("Parsed data");
+
+                    // Close client Socket using the
+                    // Close() method. After closing,
+                    // we can use the closed Socket
+                    // for a new Client Connection
+                    clientSocket.Shutdown(SocketShutdown.Both);
+                    clientSocket.Close();
+                }
+            }
+
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
+        public void ParseDataFromSocket(XmlDocument doc)
+        {
 
             XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
 
