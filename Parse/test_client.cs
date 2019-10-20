@@ -48,7 +48,7 @@ static void ExecuteClient()
 			// Creation of messagge that
 			// we will send to Server
       XmlDocument dom = new XmlDocument();
-      dom.Load(@"originalv3Message.xml");
+      dom.Load(@"test3.xml");
 			byte[] messageSent = Encoding.Default.GetBytes(dom.OuterXml);
 			int byteSent = sender.Send(messageSent);
 

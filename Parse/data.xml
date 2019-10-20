@@ -53,7 +53,7 @@
             <hl7:code code="271649006" codeSystem="2.16.840.1.113883.6.5" codeSystemName="SNOMED-CT" displayName="Systolic blood pressure" />
             <hl7:statusCode code="complete" />
             <hl7:effectiveTime value="20100511220525" />
-            <hl7:value xsi:type="hl7:PQ" value="132" unit="mm[Hg]" />
+            <hl7:value xsi:type="hl7:PQ" value="125" unit="mm[Hg]" />
             <hl7:referenceRange typeCode="REFV">
               <hl7:interpretationRange classCode="OBS" moodCode="EVN.CRT">
                 <hl7:value xsi:type="hl7:ST">90-120</hl7:value>
@@ -68,7 +68,7 @@
             <hl7:code code="271650006" codeSystem="2.16.840.1.113883.6.5" codeSystemName="SNOMED-CT" displayName="Diastolic blood pressure" />
             <hl7:statusCode code="complete" />
             <hl7:effectiveTime value="20100511220525" />
-            <hl7:value xsi:type="hl7:PQ" value="86" unit="mm[Hg]" />
+            <hl7:value xsi:type="hl7:PQ" value="90" unit="mm[Hg]" />
             <hl7:referenceRange typeCode="REFV">
               <hl7:interpretationRange classCode="OBS" moodCode="EVN.CRT">
                 <hl7:value xsi:type="hl7:ST">60-80</hl7:value>
@@ -83,7 +83,7 @@
             <hl7:code code="6797001" codeSystem="2.16.840.1.113883.6.5" codeSystemName="SNOMED-CT" displayName="Mean blood pressure" />
             <hl7:statusCode code="complete" />
             <hl7:effectiveTime value="20100511220525" />
-            <hl7:value xsi:type="hl7:PQ" value="94" unit="mm[Hg]" />
+            <hl7:value xsi:type="hl7:PQ" value="90" unit="mm[Hg]" />
             <hl7:referenceRange typeCode="REFV">
               <hl7:interpretationRange classCode="OBS" moodCode="EVN.CRT">
                 <hl7:value xsi:type="hl7:ST">92-96</hl7:value>
@@ -98,7 +98,7 @@
             <hl7:code code="386725007" codeSystem="2.16.840.1.113883.6.5" codeSystemName="SNOMED-CT" displayName="Body temperature" />
             <hl7:statusCode code="complete" />
             <hl7:effectiveTime value="20100511220525" />
-            <hl7:value xsi:type="hl7:PQ" value="37" unit="C" />
+            <hl7:value xsi:type="hl7:PQ" value="35.5" unit="C" />
             <hl7:referenceRange typeCode="REFV">
               <hl7:interpretationRange classCode="OBS" moodCode="EVN.CRT">
                 <hl7:value xsi:type="hl7:ST">37</hl7:value>
@@ -113,7 +113,7 @@
             <hl7:code code="78564009" codeSystem="2.16.840.1.113883.6.5" codeSystemName="SNOMED-CT" displayName="Pulse rate" />
             <hl7:statusCode code="complete" />
             <hl7:effectiveTime value="20100511220525" />
-            <hl7:value xsi:type="hl7:PQ" value="80" unit="bpm" />
+            <hl7:value xsi:type="hl7:PQ" value="65" unit="bpm" />
             <hl7:referenceRange typeCode="REFV">
               <hl7:interpretationRange classCode="OBS" moodCode="EVN.CRT">
                 <hl7:value xsi:type="hl7:ST">60-100</hl7:value>
@@ -128,7 +128,7 @@
             <hl7:code code="431314004" codeSystem="2.16.840.1.113883.6.5" codeSystemName="SNOMED-CT" displayName="SpO2" />
             <hl7:statusCode code="complete" />
             <hl7:effectiveTime value="20100511220525" />
-            <hl7:value xsi:type="hl7:PQ" value="90" unit="%" />
+            <hl7:value xsi:type="hl7:PQ" value="88" unit="%" />
             <hl7:referenceRange typeCode="REFV">
               <hl7:interpretationRange classCode="OBS" moodCode="EVN.CRT">
                 <hl7:value xsi:type="hl7:ST">94-100</hl7:value>
