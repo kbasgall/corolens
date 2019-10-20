@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
+using Windows.UI.Core;
 
 namespace Vitals
 {
@@ -53,19 +54,19 @@ namespace Vitals
             vitalValues = new VitalValues();
             DataContext = vitalValues;
 
-            //Task.Run(() => SimulateServer());
+            Thread t = new Thread(SimulateServer);
+            t.Start();
             //ExecuteServer();
         }
-        void OnClickHandler(object sender, RoutedEventArgs e)
-        {
-            textBlock1.Text = "Beginning!";
-            //SimulateServer();
-        }
 
-        public void UpdateUI(VitalValues vitalValues)
+        public async Task UpdateUI(VitalValues vitalValues)
         {
             vitalValues.blood_pressure_val = vitalValues.systolic_blood_pressure_val + "/" + vitalValues.diastolic_blood_pressure_val;
-            DataContext = vitalValues;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                DataContext = vitalValues;
+                Debug.WriteLine("Updated UI.....heartrate " + vitalValues.heartrate_val);
+            });
         }
 
         public void SimulateServer()
@@ -74,11 +75,12 @@ namespace Vitals
             int i = 0;
             while (true)
             {
+                Debug.WriteLine("Next file" + i);
                 XmlDocument doc = new XmlDocument();
                 doc.Load(@docs[i]);
                 ParseDataFromSocket(doc);
 
-                Thread.Sleep(500);
+                Thread.Sleep(5000);
 
                 if (i == 3) i = 0;
                 else i++;

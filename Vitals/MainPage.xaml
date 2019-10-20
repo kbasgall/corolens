@@ -12,11 +12,6 @@
         <AcrylicBrush BackgroundSource="HostBackdrop"/>
     </Page.Background>
     <StackPanel Margin="20">
-        <StackPanel>
-            <Button Content="Start" 
-            Click="OnClickHandler"/>
-            <TextBlock x:Name="textBlock1"/>
-        </StackPanel>
         <TextBlock Name="heartrate" TextWrapping="Wrap" FontSize="100"  Foreground="#FFC200CB">
             <Run Text="{Binding heartrate_val}"/>
             <Run Text="bpm" FontSize="20"/>
