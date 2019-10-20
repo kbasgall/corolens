@@ -51,7 +51,7 @@ namespace Vitals
 
         public void SimulateServer()
         {
-            String[] docs = { "patient_data1.xml", "patient_data2.xml", "patient_data3.xml", "patient_data4.xml" };
+            String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml" };
             int i = 0;
             while (true)
             {
