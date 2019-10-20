@@ -1,23 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using System.Xml;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
 
 namespace Vitals
 {
@@ -30,24 +21,51 @@ namespace Vitals
     }
     public sealed partial class MainPage : Page
     {
-        String systolic_blood_pressure_val = "--";
-        String diastolic_blood_pressure_val = "--";
-        String heartrate_val = "--";
-        String oxygen_val = "--";
-        String temperature_val = "--";
+        public VitalValues vitalValues;
 
+        public class VitalValues
+        {
+            public String systolic_blood_pressure_val { get; set; }
+            public String diastolic_blood_pressure_val { get; set; }
+            public String heartrate_val { get; set; }
+            public String oxygen_val { get; set; }
+            public String temperature_val { get; set; }
+            public String blood_pressure_val { get; set; }
+
+            public VitalValues()
+            {
+                systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "--";
+            }
+
+            public VitalValues UpdateValues(String systolic_in, String diastolic_in, String heartrate_in, String oxygen_in, String temperature_in)
+            {
+                systolic_blood_pressure_val = systolic_in;
+                diastolic_blood_pressure_val = diastolic_in;
+                heartrate_val = heartrate_in;
+                return this;
+            }
+        }        
+        
         public MainPage()
         {
             this.InitializeComponent();
             Debug.WriteLine("Hello");
-            blood_pressure.DataContext = new TextboxText() { Textdata = systolic_blood_pressure_val + "/" + diastolic_blood_pressure_val };
-            heartrate.DataContext = new TextboxText() { Textdata = heartrate_val };
-            oxygen_level.DataContext = new TextboxText() { Textdata = oxygen_val };
-            temperature.DataContext = new TextboxText() { Textdata = temperature_val };
+            vitalValues = new VitalValues();
+            DataContext = vitalValues;
 
-
-            //SimulateServer();
+            //Task.Run(() => SimulateServer());
             //ExecuteServer();
+        }
+        void OnClickHandler(object sender, RoutedEventArgs e)
+        {
+            textBlock1.Text = "Beginning!";
+            //SimulateServer();
+        }
+
+        public void UpdateUI(VitalValues vitalValues)
+        {
+            vitalValues.blood_pressure_val = vitalValues.systolic_blood_pressure_val + "/" + vitalValues.diastolic_blood_pressure_val;
+            DataContext = vitalValues;
         }
 
         public void SimulateServer()
@@ -126,7 +144,7 @@ namespace Vitals
                     }
 
                     doc.LoadXml(data);
-                    ParseDataFromSocket(doc);
+                    //ParseDataFromSocket(doc);
                     Debug.WriteLine("Parsed data");
 
                     // Close client Socket using the
@@ -162,18 +180,15 @@ namespace Vitals
                 {
                     double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                     String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
-                    temperature_val = result;
-                    temperature.DataContext = new TextboxText() { Textdata = temperature_val };
+                    vitalValues.temperature_val = result;
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Systolic blood pressure")
                 {
-                    systolic_blood_pressure_val = curr_val;
-                    blood_pressure.DataContext = new TextboxText() { Textdata = systolic_blood_pressure_val + "/" + diastolic_blood_pressure_val };
+                    vitalValues.systolic_blood_pressure_val = curr_val;
                 }
-                else if(display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
+                else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
                 {
-                    diastolic_blood_pressure_val = curr_val;
-                    blood_pressure.DataContext = new TextboxText() { Textdata = systolic_blood_pressure_val + "/" + diastolic_blood_pressure_val };
+                    vitalValues.diastolic_blood_pressure_val = curr_val;
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Mean blood pressure")
                 {
@@ -181,14 +196,14 @@ namespace Vitals
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
                 {
-                    heartrate_val = curr_val;
-                    heartrate.DataContext = new TextboxText() { Textdata = heartrate_val };
+                    vitalValues.heartrate_val = curr_val;
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "SpO2")
                 {
-                    oxygen_val = curr_val;
-                    oxygen_level.DataContext = new TextboxText() { Textdata = oxygen_val };
+                    vitalValues.oxygen_val = curr_val;
                 }
+
+                UpdateUI(vitalValues);
             }
         }
     }

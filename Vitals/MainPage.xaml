@@ -12,20 +12,25 @@
         <AcrylicBrush BackgroundSource="HostBackdrop"/>
     </Page.Background>
     <StackPanel Margin="20">
+        <StackPanel>
+            <Button Content="Start" 
+            Click="OnClickHandler"/>
+            <TextBlock x:Name="textBlock1"/>
+        </StackPanel>
         <TextBlock Name="heartrate" TextWrapping="Wrap" FontSize="100"  Foreground="#FFC200CB">
-            <Run Text="{Binding Textdata}"/>
+            <Run Text="{Binding heartrate_val}"/>
             <Run Text="bpm" FontSize="20"/>
         </TextBlock>
         <TextBlock Name="blood_pressure" TextWrapping="Wrap" FontSize="100" Foreground="#FFF39320">
-            <Run Text="{Binding Textdata}"/>
+            <Run Text="{Binding blood_pressure_val}"/>
             <Run Text="mmHg" FontSize="20"/>
         </TextBlock>
         <TextBlock Name="oxygen_level" TextWrapping="Wrap" FontSize="100" Foreground="#FF2ED813">
-            <Run Text="{Binding Textdata}"/>
+            <Run Text="{Binding oxygen_val}"/>
             <Run Text="%" FontSize="20"/>
         </TextBlock>
         <TextBlock Name="temperature" TextWrapping="Wrap" FontSize="100" Foreground="#FF0CA5DE">
-            <Run Text="{Binding Textdata}"/>
+            <Run Text="{Binding temperature_val}"/>
             <Run Text="°F" FontSize="20"/>
         </TextBlock>
     </StackPanel>
