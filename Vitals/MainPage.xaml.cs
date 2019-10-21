@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
+using System.ComponentModel;
 
 namespace Vitals
 {
@@ -20,9 +21,10 @@ namespace Vitals
     {
         public string Textdata { get; set; }
     }
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         public VitalValues vitalValues;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public class VitalValues
         {
@@ -37,14 +39,6 @@ namespace Vitals
             {
                 systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "--";
             }
-
-            public VitalValues UpdateValues(String systolic_in, String diastolic_in, String heartrate_in, String oxygen_in, String temperature_in)
-            {
-                systolic_blood_pressure_val = systolic_in;
-                diastolic_blood_pressure_val = diastolic_in;
-                heartrate_val = heartrate_in;
-                return this;
-            }
         }        
         
         public MainPage()
@@ -54,19 +48,15 @@ namespace Vitals
             vitalValues = new VitalValues();
             DataContext = vitalValues;
 
-            Thread t = new Thread(SimulateServer);
-            t.Start();
+            SimulateServer();
             //ExecuteServer();
         }
 
-        public async Task UpdateUI(VitalValues vitalValues)
+        public void UpdateUI(VitalValues vitalValues)
         {
             vitalValues.blood_pressure_val = vitalValues.systolic_blood_pressure_val + "/" + vitalValues.diastolic_blood_pressure_val;
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                DataContext = vitalValues;
-                Debug.WriteLine("Updated UI.....heartrate " + vitalValues.heartrate_val);
-            });
+            DataContext = vitalValues;
+            Debug.WriteLine("Updated UI.....heartrate " + vitalValues.heartrate_val);
         }
 
         public void SimulateServer()
