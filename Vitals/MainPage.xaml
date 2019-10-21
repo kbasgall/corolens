@@ -13,19 +13,19 @@
     </Page.Background>
     <StackPanel Margin="20">
         <TextBlock Name="heartrate" TextWrapping="Wrap" FontSize="100"  Foreground="#FFC200CB">
-            <Run Text="{Binding heartrate_val}"/>
+            <Run Text="{x:Bind Path=heartrate_val, Mode=OneWay}"/>
             <Run Text="bpm" FontSize="20"/>
         </TextBlock>
         <TextBlock Name="blood_pressure" TextWrapping="Wrap" FontSize="100" Foreground="#FFF39320">
-            <Run Text="{Binding blood_pressure_val}"/>
+            <Run Text="{x:Bind Path=blood_pressure_val, Mode=OneWay}"/>
             <Run Text="mmHg" FontSize="20"/>
         </TextBlock>
         <TextBlock Name="oxygen_level" TextWrapping="Wrap" FontSize="100" Foreground="#FF2ED813">
-            <Run Text="{Binding oxygen_val}"/>
+            <Run Text="{x:Bind Path=oxygen_val, Mode=OneWay}"/>
             <Run Text="%" FontSize="20"/>
         </TextBlock>
         <TextBlock Name="temperature" TextWrapping="Wrap" FontSize="100" Foreground="#FF0CA5DE">
-            <Run Text="{Binding temperature_val}"/>
+            <Run Text="{x:Bind Path=temperature_val, Mode=OneWay}"/>
             <Run Text="°F" FontSize="20"/>
         </TextBlock>
     </StackPanel>

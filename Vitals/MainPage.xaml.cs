@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Vitals
 {
@@ -23,40 +24,98 @@ namespace Vitals
     }
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        public VitalValues vitalValues;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public class VitalValues
-        {
-            public String systolic_blood_pressure_val { get; set; }
-            public String diastolic_blood_pressure_val { get; set; }
-            public String heartrate_val { get; set; }
-            public String oxygen_val { get; set; }
-            public String temperature_val { get; set; }
-            public String blood_pressure_val { get; set; }
+        private String _systolic_blood_pressure_val;
+        private String _diastolic_blood_pressure_val;
+        private String _heartrate_val;
+        private String _oxygen_val;
+        private String _temperature_val;
+        private String _blood_pressure_val;
 
-            public VitalValues()
+        public String systolic_blood_pressure_val {
+            get { return _systolic_blood_pressure_val; }
+            set
             {
-                systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "--";
+                _systolic_blood_pressure_val = value;
+                OnPropertyChanged();
+            } 
+        }
+        public String diastolic_blood_pressure_val
+        {
+            get { return _diastolic_blood_pressure_val; }
+            set
+            {
+                _diastolic_blood_pressure_val = value;
+                OnPropertyChanged();
             }
-        }        
+        }
+        public String heartrate_val
+        {
+            get { return _heartrate_val; }
+            set
+            {
+                _heartrate_val = value;
+                OnPropertyChanged();
+            }
+        }
+        public String oxygen_val
+        {
+            get { return _oxygen_val; }
+            set
+            {
+                _oxygen_val = value;
+                OnPropertyChanged();
+            }
+        }
+        public String temperature_val
+        {
+            get { return _temperature_val; }
+            set
+            {
+                _temperature_val = value;
+                OnPropertyChanged();
+            }
+        }
+        public String blood_pressure_val
+        {
+            get { return _blood_pressure_val; }
+            set
+            {
+                _blood_pressure_val = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public async Task OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            // Raise the PropertyChanged event, passing the name of the property whose value has changed.
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            () =>
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+            );
+        }
+               
         
         public MainPage()
         {
             this.InitializeComponent();
             Debug.WriteLine("Hello");
-            vitalValues = new VitalValues();
-            DataContext = vitalValues;
+            systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "--";
+            //DataContext = vitalValues;
 
-            SimulateServer();
+            Thread t = new Thread(SimulateServer);
+            t.Start();
             //ExecuteServer();
         }
 
-        public void UpdateUI(VitalValues vitalValues)
+        public void UpdateUI()
         {
-            vitalValues.blood_pressure_val = vitalValues.systolic_blood_pressure_val + "/" + vitalValues.diastolic_blood_pressure_val;
-            DataContext = vitalValues;
-            Debug.WriteLine("Updated UI.....heartrate " + vitalValues.heartrate_val);
+            blood_pressure_val = systolic_blood_pressure_val + "/" + diastolic_blood_pressure_val;
+            //DataContext = vitalValues;
+            Debug.WriteLine("Updated UI.....heartrate " + heartrate_val);
         }
 
         public void SimulateServer()
@@ -172,15 +231,15 @@ namespace Vitals
                 {
                     double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                     String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
-                    vitalValues.temperature_val = result;
+                    temperature_val = result;
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Systolic blood pressure")
                 {
-                    vitalValues.systolic_blood_pressure_val = curr_val;
+                    systolic_blood_pressure_val = curr_val;
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
                 {
-                    vitalValues.diastolic_blood_pressure_val = curr_val;
+                    diastolic_blood_pressure_val = curr_val;
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Mean blood pressure")
                 {
@@ -188,14 +247,14 @@ namespace Vitals
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
                 {
-                    vitalValues.heartrate_val = curr_val;
+                    heartrate_val = curr_val;
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "SpO2")
                 {
-                    vitalValues.oxygen_val = curr_val;
+                    oxygen_val = curr_val;
                 }
 
-                UpdateUI(vitalValues);
+                UpdateUI();
             }
         }
     }
