@@ -39,7 +39,7 @@ namespace Vitals
             {
                 _systolic_blood_pressure_val = value;
                 OnPropertyChanged();
-            } 
+            }
         }
         public String diastolic_blood_pressure_val
         {
@@ -97,8 +97,8 @@ namespace Vitals
             }
             );
         }
-               
-        
+
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -106,8 +106,10 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "--";
             //DataContext = vitalValues;
 
-            Thread t = new Thread(SimulateServer);
-            t.Start();
+            int data_version = 2;
+
+            Thread t = new Thread(new ParameterizedThreadStart(SimulateServer));
+            t.Start(data_version);
             //ExecuteServer();
         }
 
@@ -118,16 +120,22 @@ namespace Vitals
             Debug.WriteLine("Updated UI.....heartrate " + heartrate_val);
         }
 
-        public void SimulateServer()
+        public void SimulateServer(int data_version)
         {
             String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml" };
+            string data = "";
             int i = 0;
             while (true)
             {
                 Debug.WriteLine("Next file" + i);
-                XmlDocument doc = new XmlDocument();
-                doc.Load(@docs[i]);
-                ParseDataFromSocket(doc);
+                if(data_version == 2){
+                  ParseDataFromSocketv2(data);
+                }
+                else{
+                  XmlDocument doc = new XmlDocument();
+                  doc.Load(@docs[i]);
+                  ParseDataFromSocketv3(doc);
+                }
 
                 Thread.Sleep(5000);
 
@@ -136,7 +144,7 @@ namespace Vitals
             }
         }
 
-        public void ExecuteServer()
+        public void ExecuteServer(int data_version)
         {
             // Establish the local endpoint
             // for the socket. Dns.GetHostName
@@ -178,7 +186,6 @@ namespace Vitals
                     Socket clientSocket = listener.Accept();
 
                     // Data buffer
-                    XmlDocument doc = new XmlDocument();
                     byte[] bytes = new Byte[1024];
                     string data = null;
 
@@ -194,8 +201,14 @@ namespace Vitals
                             break;
                     }
 
-                    doc.LoadXml(data);
-                    //ParseDataFromSocket(doc);
+                    if(data_version == 2){
+                      ParseDataFromSocketv2(data);
+                    }
+                    else{
+                      XmlDocument doc = new XmlDocument();
+                      doc.LoadXml(data);
+                      ParseDataFromSocketv3(doc);
+                    }
                     Debug.WriteLine("Parsed data");
 
                     // Close client Socket using the
@@ -213,7 +226,11 @@ namespace Vitals
             }
         }
 
-        public void ParseDataFromSocket(XmlDocument doc)
+        public void ParseDataFromSocketv2(string data){
+          
+        }
+
+        public void ParseDataFromSocketv3(XmlDocument doc)
         {
 
             XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
