@@ -106,10 +106,8 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "--";
             //DataContext = vitalValues;
 
-            int data_version = 2;
-
             Thread t = new Thread(new ParameterizedThreadStart(SimulateServer));
-            t.Start(data_version);
+            t.Start();
             //ExecuteServer();
         }
 
@@ -144,12 +142,13 @@ namespace Vitals
             }
         }
 
-        public void ExecuteServer(int data_version)
+        public void ExecuteServer()
         {
             // Establish the local endpoint
             // for the socket. Dns.GetHostName
             // returns the name of the host
             // running the application.
+            int data_version = 3;
             IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
@@ -199,6 +198,8 @@ namespace Vitals
 
                         if (numByte == 0)
                             break;
+                        if(data == 'MSH')
+                            data_version = 2;
                     }
 
                     if(data_version == 2){
