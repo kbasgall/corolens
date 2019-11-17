@@ -128,7 +128,7 @@
                         <hl7:code code="431314004" codeSystem="2.16.840.1.113883.6.5" codeSystemName="SNOMED-CT" displayName="SpO2"/>
                         <hl7:statusCode code="complete"/>
                         <hl7:effectiveTime value="20100511220525"/>
-                        <hl7:value xsi:type="hl7:PQ" value="85" unit="%"/>
+                        <hl7:value xsi:type="hl7:PQ" value="92" unit="%"/>
                         <hl7:referenceRange typeCode="REFV">
                             <hl7:interpretationRange classCode="OBS" moodCode="EVN.CRT">
                                 <hl7:value xsi:type="hl7:ST">94-100</hl7:value>

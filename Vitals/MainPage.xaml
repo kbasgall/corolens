@@ -5,28 +5,38 @@
     xmlns:local="using:Vitals"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="3011.388" d:DesignHeight="1641.342"
+    mc:Ignorable="d" d:DesignWidth="5000" d:DesignHeight="5000"
     
 >
     <Page.Background>
         <AcrylicBrush BackgroundSource="HostBackdrop"/>
     </Page.Background>
-    <StackPanel Margin="20">
-        <TextBlock Name="heartrate" TextWrapping="Wrap" FontSize="100"  Foreground="#FFC200CB">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Name="current_time" Grid.Row ="0" Grid.Column ="0" FontSize="50"  Foreground="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Run Text="{x:Bind Path=current_time_val, Mode=OneWay}"/>
+        </TextBlock>
+        <TextBlock Name="heartrate" Grid.Row ="1" Grid.Column ="0" FontSize="100"  Foreground="{x:Bind Path=heartrate_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Run Text="{x:Bind Path=heartrate_val, Mode=OneWay}"/>
-            <Run Text="bpm" FontSize="20"/>
+            <Run Text="bpm" FontSize="40"/>
         </TextBlock>
-        <TextBlock Name="blood_pressure" TextWrapping="Wrap" FontSize="100" Foreground="#FFF39320">
+        <TextBlock Name="blood_pressure" Grid.Row ="2" Grid.Column ="0" FontSize="100" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Run Text="{x:Bind Path=blood_pressure_val, Mode=OneWay}"/>
-            <Run Text="mmHg" FontSize="20"/>
+            <Run Text="mmHg" FontSize="40"/>
         </TextBlock>
-        <TextBlock Name="oxygen_level" TextWrapping="Wrap" FontSize="100" Foreground="#FF2ED813">
+        <TextBlock Name="oxygen_level" Grid.Row ="3" Grid.Column ="0" FontSize="100" Foreground="{x:Bind Path=oxygen_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Run Text="{x:Bind Path=oxygen_val, Mode=OneWay}"/>
-            <Run Text="%" FontSize="20"/>
+            <Run Text="%" FontSize="40"/>
         </TextBlock>
-        <TextBlock Name="temperature" TextWrapping="Wrap" FontSize="100" Foreground="#FF0CA5DE">
+        <TextBlock Name="temperature" Grid.Row ="4" Grid.Column ="0" FontSize="100" Foreground="{x:Bind Path=temperature_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Run Text="{x:Bind Path=temperature_val, Mode=OneWay}"/>
-            <Run Text="°F" FontSize="20"/>
+            <Run Text="°F" FontSize="40"/>
         </TextBlock>
-    </StackPanel>
+    </Grid>
 </Page>
