@@ -128,7 +128,7 @@ namespace Vitals
                 OnPropertyChanged();
             }
         }
-        
+
         public String blood_pressure_color
         {
             get { return _blood_pressure_color; }
@@ -185,20 +185,15 @@ namespace Vitals
             int i = 0;
             while (true)
             {
-                Debug.WriteLine("Next file" + i);
-                if(data_version == 2){
-                  ParseDataFromSocketv2(data);
-                }
-                else{
-                  XmlDocument doc = new XmlDocument();
-                  doc.Load(@docs[i]);
-                  ParseDataFromSocketv3(doc);
-                }
+              Debug.WriteLine("Next file" + i);
+              XmlDocument doc = new XmlDocument();
+              doc.Load(@docs[i]);
+              ParseDataFromSocketv3(doc);
 
-                Thread.Sleep(5000);
+              Thread.Sleep(5000);
 
-                if (i == 3) i = 0;
-                else i++;
+              if (i == 3) i = 0;
+              else i++;
             }
         }
 
@@ -217,7 +212,6 @@ namespace Vitals
             // Socket Class Costructor
             Socket listener = new Socket(ipAddr.AddressFamily,
                         SocketType.Stream, ProtocolType.Tcp);
-
             try
             {
 
@@ -258,9 +252,9 @@ namespace Vitals
 
                         if (numByte == 0)
                             break;
-                        if(data == 'MSH')
-                            data_version = 2;
                     }
+                    if(data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
+                        data_version = 2;
 
                     if(data_version == 2){
                       ParseDataFromSocketv2(data);
@@ -309,7 +303,7 @@ namespace Vitals
                 {
                     double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                     String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
-                    temperature_val = result;                   
+                    temperature_val = result;
                     if(Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
                     {
                         temperature_color = "Black";
