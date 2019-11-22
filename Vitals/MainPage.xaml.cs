@@ -32,7 +32,21 @@ namespace Vitals
         private String _oxygen_val;
         private String _temperature_val;
         private String _blood_pressure_val;
+        private String _current_time_val;
 
+        private String _heartrate_color = "Purple";
+        private String _oxygen_color = "#FF2ED813";
+        private String _temperature_color = "#FF0CA5DE";
+        private String _blood_pressure_color = "#FFF39320";
+        public String current_time_val
+        {
+            get { return _current_time_val; }
+            set
+            {
+                _current_time_val = value;
+                OnPropertyChanged();
+            }
+        }
         public String systolic_blood_pressure_val {
             get { return _systolic_blood_pressure_val; }
             set
@@ -87,6 +101,43 @@ namespace Vitals
             }
         }
 
+        public String heartrate_color
+        {
+            get { return _heartrate_color; }
+            set
+            {
+                _heartrate_color = value;
+                OnPropertyChanged();
+            }
+        }
+        public String oxygen_color
+        {
+            get { return _oxygen_color; }
+            set
+            {
+                _oxygen_color = value;
+                OnPropertyChanged();
+            }
+        }
+        public String temperature_color
+        {
+            get { return _temperature_color; }
+            set
+            {
+                _temperature_color = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        public String blood_pressure_color
+        {
+            get { return _blood_pressure_color; }
+            set
+            {
+                _blood_pressure_color = value;
+                OnPropertyChanged();
+            }
+        }
         public async Task OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.
@@ -103,14 +154,13 @@ namespace Vitals
         {
             this.InitializeComponent();
             Debug.WriteLine("Hello");
-            systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "--";
+            systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
-            int data_version = 2;
-
-            Thread t = new Thread(new ParameterizedThreadStart(SimulateServer));
-            t.Start(data_version);
-            //ExecuteServer();
+            Thread t = new Thread(SimulateServer);
+            Thread t2 = new Thread(Clock);
+            t2.Start();
+            t.Start();
         }
 
         public void UpdateUI()
@@ -120,7 +170,15 @@ namespace Vitals
             Debug.WriteLine("Updated UI.....heartrate " + heartrate_val);
         }
 
-        public void SimulateServer(int data_version)
+        public void Clock()
+        {
+            while (true)
+            {
+                current_time_val = DateTime.Now.ToString("h:mm:ss tt");
+            }
+        }
+
+        public void SimulateServer()
         {
             String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml" };
             string data = "";
@@ -144,12 +202,13 @@ namespace Vitals
             }
         }
 
-        public void ExecuteServer(int data_version)
+        public void ExecuteServer()
         {
             // Establish the local endpoint
             // for the socket. Dns.GetHostName
             // returns the name of the host
             // running the application.
+            int data_version = 3;
             IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
@@ -199,6 +258,8 @@ namespace Vitals
 
                         if (numByte == 0)
                             break;
+                        if(data == 'MSH')
+                            data_version = 2;
                     }
 
                     if(data_version == 2){
@@ -248,15 +309,41 @@ namespace Vitals
                 {
                     double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                     String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
-                    temperature_val = result;
+                    temperature_val = result;                   
+                    if(Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
+                    {
+                        temperature_color = "Black";
+                    }
+                    else
+                    {
+                        temperature_color = "#FF0CA5DE";
+                    }
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Systolic blood pressure")
                 {
                     systolic_blood_pressure_val = curr_val;
+                    if (Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
+                        Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
+                    {
+                        blood_pressure_color = "Black";
+                    }
+                    else
+                    {
+                        blood_pressure_color = "#FFF39320";
+                    }
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
                 {
                     diastolic_blood_pressure_val = curr_val;
+                    if(Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
+                        Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
+                    {
+                        blood_pressure_color = "Black";
+                    }
+                    else
+                    {
+                        blood_pressure_color = "#FFF39320";
+                    }
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "Mean blood pressure")
                 {
@@ -265,10 +352,26 @@ namespace Vitals
                 else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
                 {
                     heartrate_val = curr_val;
+                    if(Convert.ToInt32(heartrate_val) <= 40 || Convert.ToInt32(heartrate_val) >= 150)
+                    {
+                        heartrate_color = "Black";
+                    }
+                    else
+                    {
+                        heartrate_color = "Purple";
+                    }
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "SpO2")
                 {
                     oxygen_val = curr_val;
+                    if(Convert.ToInt32(oxygen_val) <= 90)
+                    {
+                        oxygen_color = "Black";
+                    }
+                    else
+                    {
+                        oxygen_color = "#FF2ED813";
+                    }
                 }
 
                 UpdateUI();
