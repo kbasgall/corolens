@@ -159,19 +159,10 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
-<<<<<<< HEAD
-            int data_version = 3;
-
-            Thread t = new Thread(new ParameterizedThreadStart(ExecuteServer));
-            Thread t2 = new Thread(Clock);
-            t2.Start();
-            t.Start(data_version);
-=======
             Thread t = new Thread(SimulateServer);
             Thread t2 = new Thread(Clock);
             t2.Start();
             t.Start();
->>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
         }
 
         public void UpdateUI()
@@ -188,34 +179,17 @@ namespace Vitals
                 current_time_val = DateTime.Now.ToString("h:mm:ss tt");
             }
         }
-
-<<<<<<< HEAD
-        public void SimulateServer(object data_version)
-=======
         public void SimulateServer()
->>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
         {
             String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml" };
             string data = "";
             int i = 0;
             while (true)
             {
-<<<<<<< HEAD
-                Debug.WriteLine("Next file" + i);
-                if(Convert.ToInt32(data_version) == 2){
-                  ParseDataFromSocketv2(data);
-                }
-                else{
-                  XmlDocument doc = new XmlDocument();
-                  doc.Load(@docs[i]);
-                  ParseDataFromSocketv3(doc);
-                }
-=======
               Debug.WriteLine("Next file" + i);
               XmlDocument doc = new XmlDocument();
               doc.Load(@docs[i]);
               ParseDataFromSocketv3(doc);
->>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
 
               Thread.Sleep(5000);
 
@@ -223,12 +197,7 @@ namespace Vitals
               else i++;
             }
         }
-
-<<<<<<< HEAD
-        public void ExecuteServer(object data_version)
-=======
         public void ExecuteServer()
->>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
         {
             // Establish the local endpoint
             // for the socket. Dns.GetHostName
