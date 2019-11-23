@@ -26,6 +26,8 @@ namespace Vitals
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
+        public static String alert_color = "White";
+
         private String _systolic_blood_pressure_val;
         private String _diastolic_blood_pressure_val;
         private String _heartrate_val;
@@ -34,7 +36,7 @@ namespace Vitals
         private String _blood_pressure_val;
         private String _current_time_val;
 
-        private String _heartrate_color = "Purple";
+        private String _heartrate_color = "HotPink";
         private String _oxygen_color = "#FF2ED813";
         private String _temperature_color = "#FF0CA5DE";
         private String _blood_pressure_color = "#FFF39320";
@@ -157,18 +159,12 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
-<<<<<<< HEAD
-            Thread t = new Thread(SimulateServer);
+            int data_version = 3;
+
+            Thread t = new Thread(new ParameterizedThreadStart(ExecuteServer));
             Thread t2 = new Thread(Clock);
             t2.Start();
-            t.Start();
-=======
-            int data_version = 2;
-
-            Thread t = new Thread(new ParameterizedThreadStart(SimulateServer));
             t.Start(data_version);
-            //ExecuteServer();
->>>>>>> 867afbfd7c3492ce18f25923f610c2c22694e18f
         }
 
         public void UpdateUI()
@@ -178,7 +174,6 @@ namespace Vitals
             Debug.WriteLine("Updated UI.....heartrate " + heartrate_val);
         }
 
-<<<<<<< HEAD
         public void Clock()
         {
             while (true)
@@ -187,10 +182,7 @@ namespace Vitals
             }
         }
 
-        public void SimulateServer()
-=======
-        public void SimulateServer(int data_version)
->>>>>>> 867afbfd7c3492ce18f25923f610c2c22694e18f
+        public void SimulateServer(object data_version)
         {
             String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml" };
             string data = "";
@@ -198,7 +190,7 @@ namespace Vitals
             while (true)
             {
                 Debug.WriteLine("Next file" + i);
-                if(data_version == 2){
+                if(Convert.ToInt32(data_version) == 2){
                   ParseDataFromSocketv2(data);
                 }
                 else{
@@ -214,7 +206,7 @@ namespace Vitals
             }
         }
 
-        public void ExecuteServer(int data_version)
+        public void ExecuteServer(object data_version)
         {
             // Establish the local endpoint
             // for the socket. Dns.GetHostName
@@ -321,7 +313,7 @@ namespace Vitals
                     temperature_val = result;                   
                     if(Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
                     {
-                        temperature_color = "Black";
+                        temperature_color = alert_color;
                     }
                     else
                     {
@@ -334,7 +326,7 @@ namespace Vitals
                     if (Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
                         Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
                     {
-                        blood_pressure_color = "Black";
+                        blood_pressure_color = alert_color;
                     }
                     else
                     {
@@ -347,7 +339,7 @@ namespace Vitals
                     if(Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
                         Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
                     {
-                        blood_pressure_color = "Black";
+                        blood_pressure_color = alert_color;
                     }
                     else
                     {
@@ -363,11 +355,11 @@ namespace Vitals
                     heartrate_val = curr_val;
                     if(Convert.ToInt32(heartrate_val) <= 40 || Convert.ToInt32(heartrate_val) >= 150)
                     {
-                        heartrate_color = "Black";
+                        heartrate_color = alert_color;
                     }
                     else
                     {
-                        heartrate_color = "Purple";
+                        heartrate_color = "HotPink";
                     }
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "SpO2")
@@ -375,7 +367,7 @@ namespace Vitals
                     oxygen_val = curr_val;
                     if(Convert.ToInt32(oxygen_val) <= 90)
                     {
-                        oxygen_color = "Black";
+                        oxygen_color = alert_color;
                     }
                     else
                     {
