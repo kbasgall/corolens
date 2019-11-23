@@ -71,18 +71,21 @@ public static void ExecuteServer()
 					break;
 			}
 
+			IDictionary<string, string> parsed_data = new Dictionary<string, string>();
+
+
       //Console.WriteLine(data);
-      doc.LoadXml(data);
+      //doc.LoadXml(data);
       //doc.Save("data.xml");
 
-			IDictionary<string, string> parsed_data = ParseData(doc);
-
-			foreach(KeyValuePair<string, string> entry in parsed_data) {
-					Console.Write(entry.Key);
-					Console.Write(" ");
-					Console.Write(entry.Value);
-					Console.WriteLine("");
-			}
+			// IDictionary<string, string> parsed_data = ParseData(doc);
+      //
+			// foreach(KeyValuePair<string, string> entry in parsed_data) {
+			// 		Console.Write(entry.Key);
+			// 		Console.Write(" ");
+			// 		Console.Write(entry.Value);
+			// 		Console.WriteLine("");
+			// }
 
 			// Close client Socket using the
 			// Close() method. After closing,

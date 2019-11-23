@@ -256,14 +256,8 @@ namespace Vitals
                     if(data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
                         data_version = 2;
 
-                    if(data_version == 2){
-                      ParseDataFromSocketv2(data);
-                    }
-                    else{
-                      XmlDocument doc = new XmlDocument();
-                      doc.LoadXml(data);
-                      ParseDataFromSocketv3(doc);
-                    }
+                    ParseDataFromSocket(data, data_version);
+
                     Debug.WriteLine("Parsed data");
 
                     // Close client Socket using the
@@ -281,12 +275,43 @@ namespace Vitals
             }
         }
 
-        public void ParseDataFromSocketv2(string data){
-          
-        }
+        public void ParseDataFromSocket(string data, int version){
+          if(version == 2){
+            IDictionary<string, string> parsed_data = new Dictionary<string, string>();
+            List<string> piped = new List<string>();
+            string[] tokens = data.Split("OBX");
+            foreach (var word in tokens){
+              if(word[0] == '|')
+                piped.Add(word);
+            }
 
-        public void ParseDataFromSocketv3(XmlDocument doc)
-        {
+            foreach (var pipe in piped){
+              string[] fields = pipe.Split('|');
+              if(fields[2] == "NM"){
+                if(fields[3] == "3446"){
+                  dict.Add("Body temperature", fields[5]);
+                }
+                else if(fields[3] == "19"){
+                  dict.Add("Pulse rate", fields[5]);
+                }
+                else if(fields[3] == "2"){
+                  dict.Add("Systolic blood pressure", fields[5]);
+                }
+                else if(fields[3] == "3"){
+                  dict.Add("Diastolic blood pressure", fields[5]);
+                }
+                else if(fields[3] == "4"){
+                  dict.Add("Mean blood pressure", fields[5]);
+                }
+                else if(fields[3] == "14"){
+                  dict.Add("SpO2", fields[5]);
+                }
+              }
+            }
+          }
+          else{
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(data);
 
             XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
 
@@ -370,6 +395,7 @@ namespace Vitals
 
                 UpdateUI();
             }
+          }
         }
     }
 }
