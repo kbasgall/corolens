@@ -130,7 +130,7 @@ namespace Vitals
                 OnPropertyChanged();
             }
         }
-        
+
         public String blood_pressure_color
         {
             get { return _blood_pressure_color; }
@@ -159,12 +159,19 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
+<<<<<<< HEAD
             int data_version = 3;
 
             Thread t = new Thread(new ParameterizedThreadStart(ExecuteServer));
             Thread t2 = new Thread(Clock);
             t2.Start();
             t.Start(data_version);
+=======
+            Thread t = new Thread(SimulateServer);
+            Thread t2 = new Thread(Clock);
+            t2.Start();
+            t.Start();
+>>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
         }
 
         public void UpdateUI()
@@ -182,13 +189,18 @@ namespace Vitals
             }
         }
 
+<<<<<<< HEAD
         public void SimulateServer(object data_version)
+=======
+        public void SimulateServer()
+>>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
         {
             String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml" };
             string data = "";
             int i = 0;
             while (true)
             {
+<<<<<<< HEAD
                 Debug.WriteLine("Next file" + i);
                 if(Convert.ToInt32(data_version) == 2){
                   ParseDataFromSocketv2(data);
@@ -198,20 +210,31 @@ namespace Vitals
                   doc.Load(@docs[i]);
                   ParseDataFromSocketv3(doc);
                 }
+=======
+              Debug.WriteLine("Next file" + i);
+              XmlDocument doc = new XmlDocument();
+              doc.Load(@docs[i]);
+              ParseDataFromSocketv3(doc);
+>>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
 
-                Thread.Sleep(5000);
+              Thread.Sleep(5000);
 
-                if (i == 3) i = 0;
-                else i++;
+              if (i == 3) i = 0;
+              else i++;
             }
         }
 
+<<<<<<< HEAD
         public void ExecuteServer(object data_version)
+=======
+        public void ExecuteServer()
+>>>>>>> 6eb459b129f248233d52aeac44f4dcc35dde7b92
         {
             // Establish the local endpoint
             // for the socket. Dns.GetHostName
             // returns the name of the host
             // running the application.
+            int data_version = 3;
             IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
@@ -220,7 +243,6 @@ namespace Vitals
             // Socket Class Costructor
             Socket listener = new Socket(ipAddr.AddressFamily,
                         SocketType.Stream, ProtocolType.Tcp);
-
             try
             {
 
@@ -262,15 +284,11 @@ namespace Vitals
                         if (numByte == 0)
                             break;
                     }
+                    if(data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
+                        data_version = 2;
 
-                    if(data_version == 2){
-                      ParseDataFromSocketv2(data);
-                    }
-                    else{
-                      XmlDocument doc = new XmlDocument();
-                      doc.LoadXml(data);
-                      ParseDataFromSocketv3(doc);
-                    }
+                    ParseDataFromSocket(data, data_version);
+
                     Debug.WriteLine("Parsed data");
 
                     // Close client Socket using the
@@ -288,12 +306,43 @@ namespace Vitals
             }
         }
 
-        public void ParseDataFromSocketv2(string data){
-          
-        }
+        public void ParseDataFromSocket(string data, int version){
+          if(version == 2){
+            IDictionary<string, string> parsed_data = new Dictionary<string, string>();
+            List<string> piped = new List<string>();
+            string[] tokens = data.Split("OBX");
+            foreach (var word in tokens){
+              if(word[0] == '|')
+                piped.Add(word);
+            }
 
-        public void ParseDataFromSocketv3(XmlDocument doc)
-        {
+            foreach (var pipe in piped){
+              string[] fields = pipe.Split('|');
+              if(fields[2] == "NM"){
+                if(fields[3] == "3446"){
+                  dict.Add("Body temperature", fields[5]);
+                }
+                else if(fields[3] == "19"){
+                  dict.Add("Pulse rate", fields[5]);
+                }
+                else if(fields[3] == "2"){
+                  dict.Add("Systolic blood pressure", fields[5]);
+                }
+                else if(fields[3] == "3"){
+                  dict.Add("Diastolic blood pressure", fields[5]);
+                }
+                else if(fields[3] == "4"){
+                  dict.Add("Mean blood pressure", fields[5]);
+                }
+                else if(fields[3] == "14"){
+                  dict.Add("SpO2", fields[5]);
+                }
+              }
+            }
+          }
+          else{
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(data);
 
             XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
 
@@ -310,7 +359,7 @@ namespace Vitals
                 {
                     double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                     String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
-                    temperature_val = result;                   
+                    temperature_val = result;
                     if(Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
                     {
                         temperature_color = alert_color;
@@ -377,6 +426,7 @@ namespace Vitals
 
                 UpdateUI();
             }
+          }
         }
     }
 }
