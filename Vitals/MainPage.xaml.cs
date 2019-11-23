@@ -12,6 +12,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Core;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace Vitals
 {
@@ -186,15 +187,15 @@ namespace Vitals
             int i = 0;
             while (true)
             {
-              Debug.WriteLine("Next file" + i);
-              XmlDocument doc = new XmlDocument();
-              doc.Load(@docs[i]);
-              ParseDataFromSocketv3(doc);
+                Debug.WriteLine("Next file" + i);
+                XmlDocument doc = new XmlDocument();
+                doc.Load(@docs[i]);
+                ParseDataFromSocketv3(doc);
 
-              Thread.Sleep(5000);
+                Thread.Sleep(5000);
 
-              if (i == 3) i = 0;
-              else i++;
+                if (i == 3) i = 0;
+                else i++;
             }
         }
 
@@ -254,7 +255,9 @@ namespace Vitals
                         if (numByte == 0)
                             break;
                     }
-                    if(data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
+
+                    Console.WriteLine(data);
+                    if (data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
                         data_version = 2;
 
                     ParseDataFromSocket(data, data_version);
@@ -276,43 +279,8 @@ namespace Vitals
             }
         }
 
-        public void ParseDataFromSocket(string data, int version){
-          if(version == 2){
-            IDictionary<string, string> parsed_data = new Dictionary<string, string>();
-            List<string> piped = new List<string>();
-            string[] tokens = data.Split("OBX");
-            foreach (var word in tokens){
-              if(word[0] == '|')
-                piped.Add(word);
-            }
-
-            foreach (var pipe in piped){
-              string[] fields = pipe.Split('|');
-              if(fields[2] == "NM"){
-                if(fields[3] == "3446"){
-                  dict.Add("Body temperature", fields[5]);
-                }
-                else if(fields[3] == "19"){
-                  dict.Add("Pulse rate", fields[5]);
-                }
-                else if(fields[3] == "2"){
-                  dict.Add("Systolic blood pressure", fields[5]);
-                }
-                else if(fields[3] == "3"){
-                  dict.Add("Diastolic blood pressure", fields[5]);
-                }
-                else if(fields[3] == "4"){
-                  dict.Add("Mean blood pressure", fields[5]);
-                }
-                else if(fields[3] == "14"){
-                  dict.Add("SpO2", fields[5]);
-                }
-              }
-            }
-          }
-          else{
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(data);
+        public void ParseDataFromSocketv3(XmlDocument doc)
+        {
 
             XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
 
@@ -330,7 +298,7 @@ namespace Vitals
                     double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                     String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
                     temperature_val = result;
-                    if(Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
+                    if (Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
                     {
                         temperature_color = alert_color;
                     }
@@ -355,7 +323,7 @@ namespace Vitals
                 else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
                 {
                     diastolic_blood_pressure_val = curr_val;
-                    if(Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
+                    if (Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
                         Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
                     {
                         blood_pressure_color = alert_color;
@@ -372,19 +340,19 @@ namespace Vitals
                 else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
                 {
                     heartrate_val = curr_val;
-                    if(Convert.ToInt32(heartrate_val) <= 40 || Convert.ToInt32(heartrate_val) >= 150)
+                    if (Convert.ToInt32(heartrate_val) <= 40 || Convert.ToInt32(heartrate_val) >= 150)
                     {
                         heartrate_color = alert_color;
                     }
                     else
                     {
-                        heartrate_color = "HotPink";
+                        heartrate_color = "Purple";
                     }
                 }
                 else if (display_names[i].Attributes["displayName"].Value == "SpO2")
                 {
                     oxygen_val = curr_val;
-                    if(Convert.ToInt32(oxygen_val) <= 90)
+                    if (Convert.ToInt32(oxygen_val) <= 90)
                     {
                         oxygen_color = alert_color;
                     }
@@ -396,7 +364,130 @@ namespace Vitals
 
                 UpdateUI();
             }
-          }
         }
-    }
+    
+
+        public void ParseDataFromSocket(string data, int version){
+              if(version == 2){
+                IDictionary<string, string> dict = new Dictionary<string, string>();
+                List<string> piped = new List<string>();
+                string[] tokens = data.Split("OBX");
+                foreach (var word in tokens){
+                  if(word[0] == '|')
+                    piped.Add(word);
+                }
+
+                foreach (var pipe in piped){
+                  string[] fields = pipe.Split('|');
+                  if(fields[2] == "NM"){
+                    if(fields[3] == "3446"){
+                      dict.Add("Body temperature", fields[5]);
+                    }
+                    else if(fields[3] == "19"){
+                      dict.Add("Pulse rate", fields[5]);
+                    }
+                    else if(fields[3] == "2"){
+                      dict.Add("Systolic blood pressure", fields[5]);
+                    }
+                    else if(fields[3] == "3"){
+                      dict.Add("Diastolic blood pressure", fields[5]);
+                    }
+                    else if(fields[3] == "4"){
+                      dict.Add("Mean blood pressure", fields[5]);
+                    }
+                    else if(fields[3] == "14"){
+                      dict.Add("SpO2", fields[5]);
+                    }
+                  }
+                }
+              }
+              else{
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(data);
+
+                XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
+
+                mgr.AddNamespace("hl7", "urn:hl7-org:v3");
+
+                XmlNodeList vital_values = doc.DocumentElement.SelectNodes("//hl7:POLB_IN224200UV01/hl7:controlActProcess/hl7:subject/hl7:observationBattery/hl7:component1/hl7:observationEvent/hl7:value", mgr);
+                XmlNodeList display_names = doc.DocumentElement.SelectNodes("//hl7:POLB_IN224200UV01/hl7:controlActProcess/hl7:subject/hl7:observationBattery/hl7:component1/hl7:observationEvent/hl7:code", mgr);
+
+                for (int i = 0; i < vital_values.Count; ++i)
+                {
+                    String curr_val = vital_values[i].Attributes["value"].Value;
+                    // Update individual values
+                    if (display_names[i].Attributes["displayName"].Value == "Body temperature")
+                    {
+                        double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
+                        String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
+                        temperature_val = result;
+                        if(Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
+                        {
+                            temperature_color = alert_color;
+                        }
+                        else
+                        {
+                            temperature_color = "#FF0CA5DE";
+                        }
+                    }
+                    else if (display_names[i].Attributes["displayName"].Value == "Systolic blood pressure")
+                    {
+                        systolic_blood_pressure_val = curr_val;
+                        if (Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
+                            Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
+                        {
+                            blood_pressure_color = alert_color;
+                        }
+                        else
+                        {
+                            blood_pressure_color = "#FFF39320";
+                        }
+                    }
+                    else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
+                    {
+                        diastolic_blood_pressure_val = curr_val;
+                        if(Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
+                            Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
+                        {
+                            blood_pressure_color = alert_color;
+                        }
+                        else
+                        {
+                            blood_pressure_color = "#FFF39320";
+                        }
+                    }
+                    else if (display_names[i].Attributes["displayName"].Value == "Mean blood pressure")
+                    {
+
+                    }
+                    else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
+                    {
+                        heartrate_val = curr_val;
+                        if(Convert.ToInt32(heartrate_val) <= 40 || Convert.ToInt32(heartrate_val) >= 150)
+                        {
+                            heartrate_color = alert_color;
+                        }
+                        else
+                        {
+                            heartrate_color = "HotPink";
+                        }
+                    }
+                    else if (display_names[i].Attributes["displayName"].Value == "SpO2")
+                    {
+                        oxygen_val = curr_val;
+                        if(Convert.ToInt32(oxygen_val) <= 90)
+                        {
+                            oxygen_color = alert_color;
+                        }
+                        else
+                        {
+                            oxygen_color = "#FF2ED813";
+                        }
+                    }
+
+                    UpdateUI();
+                }
+              }
+            }
+        }
 }

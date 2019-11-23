@@ -6,34 +6,53 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="0" d:DesignHeight="0"
-    
->
+    MinHeight="0" MinWidth="0"
+    >
+
     <Page.Background>
         <AcrylicBrush TintColor="#000000" TintOpacity="0.1" BackgroundSource="HostBackdrop"/>
-        
     </Page.Background>
-    <VariableSizedWrapGrid Orientation="Vertical" ItemWidth="255" ItemHeight="65" Margin="10 10 10 10">
-            <TextBlock Name="current_time" FontSize="50" Height="75" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1000" />
+
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="myPanel.Orientation" Value="Horizontal" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <TextBlock Name="current_time" FontSize="50" Height="75" Padding="20 0 20 100" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Run Text="{x:Bind Path=current_time_val, Mode=OneWay}"/>
-            </TextBlock>
-            <TextBlock Name="heartrate" FontSize="100" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=heartrate_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        </TextBlock>
+
+        <StackPanel x:Name="myPanel" Orientation="Vertical" Padding="20 40 0 0">
+            <TextBlock Name="heartrate" FontSize="100" Padding="0 0 20 0" Foreground="{x:Bind Path=heartrate_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=heartrate_val, Mode=OneWay}"/>
                 <Run Text="bpm" FontSize="40"/>
             </TextBlock>
 
-            <TextBlock Name="blood_pressure" FontSize="100" VariableSizedWrapGrid.ColumnSpan="2" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock Name="blood_pressure" FontSize="100" Padding="0 0 20 0" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=blood_pressure_val, Mode=OneWay}"/>
                 <Run Text="mmHg" FontSize="40"/>
             </TextBlock>
 
-            <TextBlock Name="oxygen_level" FontSize="100" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=oxygen_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock Name="oxygen_level" FontSize="100" Padding="0 0 20 0" Foreground="{x:Bind Path=oxygen_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=oxygen_val, Mode=OneWay}"/>
                 <Run Text="%" FontSize="40"/>
             </TextBlock>
 
-            <TextBlock Name="temperature" FontSize="100" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=temperature_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock Name="temperature" FontSize="100" Padding="0 0 20 0" Foreground="{x:Bind Path=temperature_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=temperature_val, Mode=OneWay}"/>
                 <Run Text="°F" FontSize="40"/>
             </TextBlock>
-    </VariableSizedWrapGrid>
+        </StackPanel>
+    </Grid>
 </Page>
