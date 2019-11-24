@@ -161,7 +161,7 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
-            Thread t = new Thread(SimulateServer);
+            Thread t = new Thread(ExecuteServer);
             Thread t2 = new Thread(Clock);
             t2.Start();
             t.Start();
@@ -184,41 +184,14 @@ namespace Vitals
 
         void ClickRevert(object sender, RoutedEventArgs e)
         {
-            heartrate_button.Height = double.NaN;
-            heartrate_button.Width = double.NaN;
-
-            blood_pressure_button.Height = double.NaN;
-            blood_pressure_button.Width = double.NaN;
-
-            oxygen_button.Height = double.NaN;
-            oxygen_button.Width = double.NaN;
-
-            temperature_button.Height = double.NaN;
-            temperature_button.Width = double.NaN;
+            heartrate_button.Height = 200;
+            heartrate_button.Width = 200;
         }
-        void OnClickHR(object sender, RoutedEventArgs e)
+        void OnClick(object sender, RoutedEventArgs e)
         {
             heartrate_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
             heartrate_button.Height = 0;
             heartrate_button.Width = 0;
-        }
-        void OnClickBP(object sender, RoutedEventArgs e)
-        {
-            blood_pressure_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
-            blood_pressure_button.Height = 0;
-            blood_pressure_button.Width = 0;
-        }
-        void OnClickO2(object sender, RoutedEventArgs e)
-        {
-            oxygen_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
-            oxygen_button.Height = 0;
-            oxygen_button.Width = 0;
-        }
-        void OnClickT(object sender, RoutedEventArgs e)
-        {
-            temperature_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
-            temperature_button.Height = 0;
-            temperature_button.Width = 0;
         }
         public void SimulateServer()
         {
@@ -244,61 +217,77 @@ namespace Vitals
             // returns the name of the host
             // running the application.
             int data_version = 3;
-            TcpListener server = null;
+            IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddr = ipHost.AddressList[0];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
 
-            try{
-              Int32 port = 11111;
-              IPAddress localAddr = IPAddress.Parse("35.2.239.229");
+            // Creation TCP/IP Socket using
+            // Socket Class Costructor
+            Socket listener = new Socket(ipAddr.AddressFamily,
+                        SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
 
-              server = new TcpListener(localAddr, port);
+                // Using Bind() method we associate a
+                // network address to the Server Socket
+                // All client that will connect to this
+                // Server Socket must know this network
+                // Address
+                listener.Bind(localEndPoint);
 
-              server.Start();
+                // Using Listen() method we create
+                // the Client list that will want
+                // to connect to Server
+                listener.Listen(10);
 
-              Byte[] bytes = new Byte[1024];
-              String data = null;
+                while (true)
+                {
 
-              while(true){
-                Console.Write("Waiting for a connection... ");
+                    Debug.WriteLine("Waiting connection ... ");
 
-                // Perform a blocking call to accept requests.
-                // You could also user server.AcceptSocket() here.
-                TcpClient client = server.AcceptTcpClient();
-                Console.WriteLine("Connected!");
+                    // Suspend while waiting for
+                    // incoming connection Using
+                    // Accept() method the server
+                    // will accept connection of client
+                    Socket clientSocket = listener.Accept();
 
-                data = null;
+                    // Data buffer
+                    byte[] bytes = new Byte[1024];
+                    string data = null;
 
-                // Get a stream object for reading and writing
-                NetworkStream stream = client.GetStream();
+                    while (true)
+                    {
 
-                int i;
+                        int numByte = clientSocket.Receive(bytes);
 
-                // Loop to receive all the data sent by the client.
-                while((i = stream.Read(bytes, 0, bytes.Length))!=0){
-                  // Translate data bytes to a ASCII string.
-                  data += System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                        data += Encoding.UTF8.GetString(bytes,
+                                                0, numByte);
+
+                        if (numByte == 0)
+                            break;
+                    }
+
+                    Console.WriteLine(data);
+                    if (data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
+                        data_version = 2;
+
+                    ParseDataFromSocket(data, data_version);
+
+                    Debug.WriteLine("Parsed data");
+
+                    // Close client Socket using the
+                    // Close() method. After closing,
+                    // we can use the closed Socket
+                    // for a new Client Connection
+                    clientSocket.Shutdown(SocketShutdown.Both);
+                    clientSocket.Close();
                 }
-
-                Console.WriteLine(data);
-                
-                if (data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
-                    data_version = 2;
-
-                ParseDataFromSocket(data, data_version);
-
-                // Shutdown and end connection
-                client.Close();
-              }
-            }
-            catch(SocketException e){
-              Console.WriteLine("SocketException: {0}", e);
-            }
-            finally{
-              // Stop listening for new clients.
-              server.Stop();
             }
 
-            Console.WriteLine("\nHit enter to continue...");
-            Console.Read();
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
 
 
