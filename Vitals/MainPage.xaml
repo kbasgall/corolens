@@ -29,17 +29,19 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <StackPanel Padding="20 0 20 100">
-            <Button x:Name="revert_button" Click="ClickRevert" ClickMode="Press" Content="Revert" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <StackPanel Padding="20 0 20 0" Margin="0" Orientation="Vertical">
+            <Button x:Name="revert_button" Click="ClickRevert" ClickMode="Press" Content="Revert" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top">
+                
+            </Button>
 
             <TextBlock Name="current_time" FontSize="50" Height="75" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Run Text="{x:Bind Path=current_time_val, Mode=OneWay}"/>
             </TextBlock>
         </StackPanel>
 
-        <StackPanel x:Name="myPanel" Orientation="Vertical" Padding="20 40 0 0">
+        <StackPanel x:Name="myPanel" Orientation="Vertical" Padding="20 70 0 0" VerticalAlignment="Top">
 
-            <Button x:Name="heartrate_button" Click="OnClick" ClickMode="Press" Padding="0   0 20 0">
+            <Button x:Name="heartrate_button" Click="OnClickHR" ClickMode="Press" Padding="0 0 20 0">
                 <Button.Background>
                     <SolidColorBrush Opacity="0" />
                 </Button.Background>
@@ -49,20 +51,36 @@
                 </TextBlock>
             </Button>
 
-            <TextBlock Name="blood_pressure" FontSize="100" Padding="0 0 20 0" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Run Text="{x:Bind Path=blood_pressure_val, Mode=OneWay}"/>
-                <Run Text="mmHg" FontSize="40"/>
-            </TextBlock>
+            <Button x:Name="blood_pressure_button" Click="OnClickBP" ClickMode="Press" Padding="0 0 20 0" >
+                <Button.Background>
+                    <SolidColorBrush Opacity="0" />
+                </Button.Background>
+                <TextBlock Name="blood_pressure" FontSize="100" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Run Text="{x:Bind Path=blood_pressure_val, Mode=OneWay}"/>
+                    <Run Text="mmHg" FontSize="40"/>
+                </TextBlock>
+            </Button>
 
-            <TextBlock Name="oxygen_level" FontSize="100" Padding="0 0 20 0" Foreground="{x:Bind Path=oxygen_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button x:Name="oxygen_button" Click="OnClickO2" ClickMode="Press" Padding="0 0 20 0" >
+                <Button.Background>
+                    <SolidColorBrush Opacity="0" />
+                </Button.Background>
+                <TextBlock Name="oxygen_level" FontSize="100" Foreground="{x:Bind Path=oxygen_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=oxygen_val, Mode=OneWay}"/>
                 <Run Text="%" FontSize="40"/>
-            </TextBlock>
+                </TextBlock>
+            </Button>
 
-            <TextBlock Name="temperature" FontSize="100" Padding="0 0 20 0" Foreground="{x:Bind Path=temperature_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button x:Name="temperature_button" Click="OnClickT" ClickMode="Press" Padding="0 0 20 0" >
+                <Button.Background>
+                    <SolidColorBrush Opacity="0" />
+                </Button.Background>
+                <TextBlock Name="temperature" FontSize="100" Foreground="{x:Bind Path=temperature_color, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=temperature_val, Mode=OneWay}"/>
                 <Run Text="°F" FontSize="40"/>
-            </TextBlock>
+                </TextBlock>
+            </Button>
         </StackPanel>
+        
     </Grid>
 </Page>
