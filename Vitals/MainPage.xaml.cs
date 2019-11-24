@@ -194,7 +194,7 @@ namespace Vitals
             }
         }
 
-void ClickRevert(object sender, RoutedEventArgs e)
+        void ClickRevert(object sender, RoutedEventArgs e)
         {
             heartrate_button.Height = double.NaN;
             heartrate_button.Width = double.NaN;
@@ -332,9 +332,9 @@ void ClickRevert(object sender, RoutedEventArgs e)
 
         public void ParseDataFromSocket(string data, int version){
               if(version == 2){
-                IDictionary<string, string> dict = new Dictionary<string, string>();
                 List<string> piped = new List<string>();
                 string[] tokens = data.Split("OBX");
+
                 foreach (var word in tokens){
                   if(word[0] == '|')
                     piped.Add(word);
@@ -344,24 +344,69 @@ void ClickRevert(object sender, RoutedEventArgs e)
                   string[] fields = pipe.Split('|');
                   if(fields[2] == "NM"){
                     if(fields[3] == "3446"){
-                      dict.Add("Body temperature", fields[5]);
+                      double fahrenheit = ((Double.Parse(fields[5]) * 9) / 5) + 32;
+                      String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
+                      temperature_val = result;
+                      if(Convert.ToDouble(temperature_val) <= temp_alert_lower_val || Convert.ToDouble(temperature_val) >= temp_alert_upper_val)
+                      {
+                          temperature_color = alert_color;
+                      }
+                      else
+                      {
+                          temperature_color = "#FF0CA5DE";
+                      }
                     }
                     else if(fields[3] == "19"){
-                      dict.Add("Pulse rate", fields[5]);
+                      heartrate_val = fields[5];
+                      if(Convert.ToInt32(heartrate_val) <= hr_alert_lower_val || Convert.ToInt32(heartrate_val) >= hr_alert_upper_val)
+                      {
+                          heartrate_color = alert_color;
+                      }
+                      else
+                      {
+                          heartrate_color = "HotPink";
+                      }
                     }
                     else if(fields[3] == "2"){
-                      dict.Add("Systolic blood pressure", fields[5]);
+                      systolic_blood_pressure_val = fields[5];
+                      if (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                          Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
+                      {
+                          blood_pressure_color = alert_color;
+                      }
+                      else
+                      {
+                          blood_pressure_color = "#FFF39320";
+                      }
                     }
                     else if(fields[3] == "3"){
-                      dict.Add("Diastolic blood pressure", fields[5]);
+                      diastolic_blood_pressure_val = fields[5];
+                      if(Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                          Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
+                      {
+                          blood_pressure_color = alert_color;
+                      }
+                      else
+                      {
+                          blood_pressure_color = "#FFF39320";
+                      }
                     }
                     else if(fields[3] == "4"){
-                      dict.Add("Mean blood pressure", fields[5]);
+                      Console.WriteLine("mean blood pressure");
                     }
                     else if(fields[3] == "14"){
-                      dict.Add("SpO2", fields[5]);
+                      oxygen_val = fields[5];
+                      if(Convert.ToInt32(oxygen_val) <= sp02_alert_lower_val)
+                      {
+                          oxygen_color = alert_color;
+                      }
+                      else
+                      {
+                          oxygen_color = "#FF2ED813";
+                      }
                     }
                   }
+                  UpdateUI();
                 }
               }
               else{
@@ -447,7 +492,6 @@ void ClickRevert(object sender, RoutedEventArgs e)
                             oxygen_color = "#FF2ED813";
                         }
                     }
-
                     UpdateUI();
                 }
               }
