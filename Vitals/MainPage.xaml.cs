@@ -217,77 +217,61 @@ namespace Vitals
             // returns the name of the host
             // running the application.
             int data_version = 3;
-            IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddr = ipHost.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
+            TcpListener server = null;
 
-            // Creation TCP/IP Socket using
-            // Socket Class Costructor
-            Socket listener = new Socket(ipAddr.AddressFamily,
-                        SocketType.Stream, ProtocolType.Tcp);
-            try
-            {
+            try{
+              Int32 port = 11111;
+              IPAddress localAddr = IPAddress.Parse("35.2.239.229");
 
-                // Using Bind() method we associate a
-                // network address to the Server Socket
-                // All client that will connect to this
-                // Server Socket must know this network
-                // Address
-                listener.Bind(localEndPoint);
+              server = new TcpListener(localAddr, port);
 
-                // Using Listen() method we create
-                // the Client list that will want
-                // to connect to Server
-                listener.Listen(10);
+              server.Start();
 
-                while (true)
-                {
+              Byte[] bytes = new Byte[1024];
+              String data = null;
 
-                    Debug.WriteLine("Waiting connection ... ");
+              while(true){
+                Console.Write("Waiting for a connection... ");
 
-                    // Suspend while waiting for
-                    // incoming connection Using
-                    // Accept() method the server
-                    // will accept connection of client
-                    Socket clientSocket = listener.Accept();
+                // Perform a blocking call to accept requests.
+                // You could also user server.AcceptSocket() here.
+                TcpClient client = server.AcceptTcpClient();
+                Console.WriteLine("Connected!");
 
-                    // Data buffer
-                    byte[] bytes = new Byte[1024];
-                    string data = null;
+                data = null;
 
-                    while (true)
-                    {
+                // Get a stream object for reading and writing
+                NetworkStream stream = client.GetStream();
 
-                        int numByte = clientSocket.Receive(bytes);
+                int i;
 
-                        data += Encoding.UTF8.GetString(bytes,
-                                                0, numByte);
-
-                        if (numByte == 0)
-                            break;
-                    }
-
-                    Console.WriteLine(data);
-                    if (data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
-                        data_version = 2;
-
-                    ParseDataFromSocket(data, data_version);
-
-                    Debug.WriteLine("Parsed data");
-
-                    // Close client Socket using the
-                    // Close() method. After closing,
-                    // we can use the closed Socket
-                    // for a new Client Connection
-                    clientSocket.Shutdown(SocketShutdown.Both);
-                    clientSocket.Close();
+                // Loop to receive all the data sent by the client.
+                while((i = stream.Read(bytes, 0, bytes.Length))!=0){
+                  // Translate data bytes to a ASCII string.
+                  data += System.Text.Encoding.ASCII.GetString(bytes, 0, i);
                 }
+
+                Console.WriteLine(data);
+                
+                if (data[0] == 'M' && data[1] == 'S' && data[2] == 'H')
+                    data_version = 2;
+
+                ParseDataFromSocket(data, data_version);
+
+                // Shutdown and end connection
+                client.Close();
+              }
+            }
+            catch(SocketException e){
+              Console.WriteLine("SocketException: {0}", e);
+            }
+            finally{
+              // Stop listening for new clients.
+              server.Stop();
             }
 
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+            Console.WriteLine("\nHit enter to continue...");
+            Console.Read();
         }
 
 
