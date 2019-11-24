@@ -26,7 +26,7 @@ static void ExecuteClient()
 		// uses port 11111 on the local
 		// computer.
 		IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-		IPAddress ipAddr = ipHost.AddressList[0];
+		IPAddress ipAddr = IPAddress.Parse("35.2.162.213");
 		IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
 
 		// Creation TCP/IP Socket using
@@ -48,7 +48,7 @@ static void ExecuteClient()
 			// Creation of messagge that
 			// we will send to Server
       XmlDocument dom = new XmlDocument();
-      dom.Load(@"test3.xml");
+      dom.Load(@"test1.xml");
 			byte[] messageSent = Encoding.Default.GetBytes(dom.OuterXml);
 			int byteSent = sender.Send(messageSent);
 
