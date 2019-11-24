@@ -173,7 +173,7 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
-            Thread t = new Thread(ExecuteServer);
+            Thread t = new Thread(SimulateServer);
             Thread t2 = new Thread(Clock);
             t2.Start();
             t.Start();
@@ -194,7 +194,7 @@ namespace Vitals
             }
         }
 
-        void ClickRevert(object sender, RoutedEventArgs e)
+void ClickRevert(object sender, RoutedEventArgs e)
         {
             heartrate_button.Height = double.NaN;
             heartrate_button.Width = double.NaN;
@@ -240,7 +240,7 @@ namespace Vitals
             while (true)
             {
                 Debug.WriteLine("Next file" + i);
-                ParseDataFromSocket(@docs[i], 3);
+                ParseDataFromSocket(docs[i], 3);
 
                 Thread.Sleep(5000);
 
@@ -366,7 +366,7 @@ namespace Vitals
               }
               else{
                 XmlDocument doc = new XmlDocument();
-                doc.LoadXml(data);
+                doc.Load(data);
 
                 XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
 
