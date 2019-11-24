@@ -13,6 +13,7 @@ using Windows.UI.Core;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using Windows.UI.Xaml.Media;
 
 namespace Vitals
 {
@@ -160,7 +161,7 @@ namespace Vitals
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
-            Thread t = new Thread(SimulateServer);
+            Thread t = new Thread(ExecuteServer);
             Thread t2 = new Thread(Clock);
             t2.Start();
             t.Start();
@@ -179,6 +180,18 @@ namespace Vitals
             {
                 current_time_val = DateTime.Now.ToString("h:mm:ss tt");
             }
+        }
+
+        void ClickRevert(object sender, RoutedEventArgs e)
+        {
+            heartrate_button.Height = 200;
+            heartrate_button.Width = 200;
+        }
+        void OnClick(object sender, RoutedEventArgs e)
+        {
+            heartrate_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+            heartrate_button.Height = 0;
+            heartrate_button.Width = 0;
         }
         public void SimulateServer()
         {

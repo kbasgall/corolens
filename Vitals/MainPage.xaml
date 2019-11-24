@@ -29,15 +29,25 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <TextBlock Name="current_time" FontSize="50" Height="75" Padding="20 0 20 100" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Run Text="{x:Bind Path=current_time_val, Mode=OneWay}"/>
-        </TextBlock>
+        <StackPanel Padding="20 0 20 100">
+            <Button x:Name="revert_button" Click="ClickRevert" ClickMode="Press" Content="Revert" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+            <TextBlock Name="current_time" FontSize="50" Height="75" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Run Text="{x:Bind Path=current_time_val, Mode=OneWay}"/>
+            </TextBlock>
+        </StackPanel>
 
         <StackPanel x:Name="myPanel" Orientation="Vertical" Padding="20 40 0 0">
-            <TextBlock Name="heartrate" FontSize="100" Padding="0 0 20 0" Foreground="{x:Bind Path=heartrate_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Run Text="{x:Bind Path=heartrate_val, Mode=OneWay}"/>
-                <Run Text="bpm" FontSize="40"/>
-            </TextBlock>
+
+            <Button x:Name="heartrate_button" Click="OnClick" ClickMode="Press" Padding="0   0 20 0">
+                <Button.Background>
+                    <SolidColorBrush Opacity="0" />
+                </Button.Background>
+                <TextBlock Name="heartrate" FontSize="100" Foreground="{x:Bind Path=heartrate_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Run Text="{x:Bind Path=heartrate_val, Mode=OneWay}"/>
+                    <Run Text="bpm" FontSize="40"/>
+                </TextBlock>
+            </Button>
 
             <TextBlock Name="blood_pressure" FontSize="100" Padding="0 0 20 0" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=blood_pressure_val, Mode=OneWay}"/>
