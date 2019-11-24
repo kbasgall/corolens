@@ -196,14 +196,41 @@ namespace Vitals
 
         void ClickRevert(object sender, RoutedEventArgs e)
         {
-            heartrate_button.Height = 200;
-            heartrate_button.Width = 200;
+            heartrate_button.Height = double.NaN;
+            heartrate_button.Width = double.NaN;
+
+            blood_pressure_button.Height = double.NaN;
+            blood_pressure_button.Width = double.NaN;
+
+            oxygen_button.Height = double.NaN;
+            oxygen_button.Width = double.NaN;
+
+            temperature_button.Height = double.NaN;
+            temperature_button.Width = double.NaN;
         }
-        void OnClick(object sender, RoutedEventArgs e)
+        void OnClickHR(object sender, RoutedEventArgs e)
         {
             heartrate_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
             heartrate_button.Height = 0;
             heartrate_button.Width = 0;
+        }
+        void OnClickBP(object sender, RoutedEventArgs e)
+        {
+            blood_pressure_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+            blood_pressure_button.Height = 0;
+            blood_pressure_button.Width = 0;
+        }
+        void OnClickO2(object sender, RoutedEventArgs e)
+        {
+            oxygen_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+            oxygen_button.Height = 0;
+            oxygen_button.Width = 0;
+        }
+        void OnClickT(object sender, RoutedEventArgs e)
+        {
+            temperature_button.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+            temperature_button.Height = 0;
+            temperature_button.Width = 0;
         }
         public void SimulateServer()
         {
