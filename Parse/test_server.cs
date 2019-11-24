@@ -21,7 +21,7 @@ public static void ExecuteServer()
 	TcpListener server = null;
 	try{
 	  Int32 port = 11111;
-	  IPAddress localAddr = IPAddress.Parse("35.2.239.229");
+	  IPAddress localAddr = IPAddress.Parse("35.2.162.213");
 
 	  server = new TcpListener(localAddr, port);
 
