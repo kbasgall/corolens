@@ -28,8 +28,18 @@ namespace Vitals
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public static String alert_color = "White";
+        // Upper and lower alert ranges for temperature, diastolic blood pressure, systolic blood pressure, heart rate, Sp02
+        public static int temp_alert_lower_val = 90;
+        public static int temp_alert_upper_val = 105;
+        public static int bp_diast_alert_lower_val = 60;
+        public static int bp_diast_alert_upper_val = 110;
+        public static int bp_syst_alert_lower_val = 80;
+        public static int bp_syst_alert_upper_val = 160;
+        public static int hr_alert_lower_val = 40;
+        public static int hr_alert_upper_val = 150;
+        public static int sp02_alert_lower_val = 90;
 
+        // Current vital readings
         private String _systolic_blood_pressure_val;
         private String _diastolic_blood_pressure_val;
         private String _heartrate_val;
@@ -38,6 +48,8 @@ namespace Vitals
         private String _blood_pressure_val;
         private String _current_time_val;
 
+        // Colors for UI display
+        public static String alert_color = "White";
         private String _heartrate_color = "HotPink";
         private String _oxygen_color = "#FF2ED813";
         private String _temperature_color = "#FF0CA5DE";
@@ -345,7 +357,7 @@ namespace Vitals
                         double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                         String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
                         temperature_val = result;
-                        if(Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
+                        if(Convert.ToDouble(temperature_val) <= temp_alert_lower_val || Convert.ToDouble(temperature_val) >= temp_alert_upper_val)
                         {
                             temperature_color = alert_color;
                         }
@@ -357,8 +369,8 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "Systolic blood pressure")
                     {
                         systolic_blood_pressure_val = curr_val;
-                        if (Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
-                            Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
+                        if (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                            Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
                         {
                             blood_pressure_color = alert_color;
                         }
@@ -370,8 +382,8 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
                     {
                         diastolic_blood_pressure_val = curr_val;
-                        if(Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
-                            Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
+                        if(Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                            Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
                         {
                             blood_pressure_color = alert_color;
                         }
@@ -387,7 +399,7 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
                     {
                         heartrate_val = curr_val;
-                        if(Convert.ToInt32(heartrate_val) <= 40 || Convert.ToInt32(heartrate_val) >= 150)
+                        if(Convert.ToInt32(heartrate_val) <= hr_alert_lower_val || Convert.ToInt32(heartrate_val) >= hr_alert_upper_val)
                         {
                             heartrate_color = alert_color;
                         }
@@ -399,7 +411,7 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "SpO2")
                     {
                         oxygen_val = curr_val;
-                        if(Convert.ToInt32(oxygen_val) <= 90)
+                        if(Convert.ToInt32(oxygen_val) <= sp02_alert_lower_val)
                         {
                             oxygen_color = alert_color;
                         }
