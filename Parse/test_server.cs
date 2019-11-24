@@ -18,87 +18,55 @@ static void Main(string[] args)
 
 public static void ExecuteServer()
 {
-	// Establish the local endpoint
-	// for the socket. Dns.GetHostName
-	// returns the name of the host
-	// running the application.
-	IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-	IPAddress ipAddr = ipHost.AddressList[0];
-	IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
+	TcpListener server = null;
+	try{
+	  Int32 port = 11111;
+	  IPAddress localAddr = IPAddress.Parse("35.2.239.229");
 
-	// Creation TCP/IP Socket using
-	// Socket Class Costructor
-	Socket listener = new Socket(ipAddr.AddressFamily,
-				SocketType.Stream, ProtocolType.Tcp);
+	  server = new TcpListener(localAddr, port);
 
-	try {
+	  server.Start();
 
-		// Using Bind() method we associate a
-		// network address to the Server Socket
-		// All client that will connect to this
-		// Server Socket must know this network
-		// Address
-		listener.Bind(localEndPoint);
+	  Byte[] bytes = new Byte[1024];
+	  String data = null;
 
-		// Using Listen() method we create
-		// the Client list that will want
-		// to connect to Server
-		listener.Listen(10);
+	  while(true){
+	    Console.Write("Waiting for a connection... ");
 
-		while (true) {
+	    // Perform a blocking call to accept requests.
+	    // You could also user server.AcceptSocket() here.
+	    TcpClient client = server.AcceptTcpClient();
+	    Console.WriteLine("Connected!");
 
-			Console.WriteLine("Waiting connection ... ");
+	    data = null;
 
-			// Suspend while waiting for
-			// incoming connection Using
-			// Accept() method the server
-			// will accept connection of client
-			Socket clientSocket = listener.Accept();
+	    // Get a stream object for reading and writing
+	    NetworkStream stream = client.GetStream();
 
-			// Data buffer
-      XmlDocument doc = new XmlDocument();
-			byte[] bytes = new Byte[1024];
-			string data = null;
+	    int i;
 
-			while (true) {
+	    // Loop to receive all the data sent by the client.
+	    while((i = stream.Read(bytes, 0, bytes.Length))!=0){
+	      // Translate data bytes to a ASCII string.
+	      data += System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+	    }
 
-				int numByte = clientSocket.Receive(bytes);
+			Console.WriteLine(data);
 
-				data += Encoding.UTF8.GetString(bytes,
-										0, numByte);
-
-				if (numByte == 0)
-					break;
-			}
-
-			IDictionary<string, string> parsed_data = new Dictionary<string, string>();
-
-
-      //Console.WriteLine(data);
-      //doc.LoadXml(data);
-      //doc.Save("data.xml");
-
-			// IDictionary<string, string> parsed_data = ParseData(doc);
-      //
-			// foreach(KeyValuePair<string, string> entry in parsed_data) {
-			// 		Console.Write(entry.Key);
-			// 		Console.Write(" ");
-			// 		Console.Write(entry.Value);
-			// 		Console.WriteLine("");
-			// }
-
-			// Close client Socket using the
-			// Close() method. After closing,
-			// we can use the closed Socket
-			// for a new Client Connection
-			clientSocket.Shutdown(SocketShutdown.Both);
-			clientSocket.Close();
-		}
+	    // Shutdown and end connection
+	    client.Close();
+	  }
+	}
+	catch(SocketException e){
+	  Console.WriteLine("SocketException: {0}", e);
+	}
+	finally{
+	  // Stop listening for new clients.
+	  server.Stop();
 	}
 
-	catch (Exception e) {
-		Console.WriteLine(e.ToString());
-	}
+	Console.WriteLine("\nHit enter to continue...");
+	Console.Read();
 }
 
 public static IDictionary<string, string> ParseData(XmlDocument doc){
