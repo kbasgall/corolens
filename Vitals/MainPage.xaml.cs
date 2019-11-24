@@ -201,9 +201,7 @@ namespace Vitals
             while (true)
             {
                 Debug.WriteLine("Next file" + i);
-                XmlDocument doc = new XmlDocument();
-                doc.Load(@docs[i]);
-                ParseDataFromSocketv3(doc);
+                ParseDataFromSocket(@docs[i], 3);
 
                 Thread.Sleep(5000);
 
@@ -292,93 +290,6 @@ namespace Vitals
             }
         }
 
-        public void ParseDataFromSocketv3(XmlDocument doc)
-        {
-
-            XmlNamespaceManager mgr = new XmlNamespaceManager(doc.NameTable);
-
-            mgr.AddNamespace("hl7", "urn:hl7-org:v3");
-
-            XmlNodeList vital_values = doc.DocumentElement.SelectNodes("//hl7:POLB_IN224200UV01/hl7:controlActProcess/hl7:subject/hl7:observationBattery/hl7:component1/hl7:observationEvent/hl7:value", mgr);
-            XmlNodeList display_names = doc.DocumentElement.SelectNodes("//hl7:POLB_IN224200UV01/hl7:controlActProcess/hl7:subject/hl7:observationBattery/hl7:component1/hl7:observationEvent/hl7:code", mgr);
-
-            for (int i = 0; i < vital_values.Count; ++i)
-            {
-                String curr_val = vital_values[i].Attributes["value"].Value;
-                // Update individual values
-                if (display_names[i].Attributes["displayName"].Value == "Body temperature")
-                {
-                    double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
-                    String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
-                    temperature_val = result;
-                    if (Convert.ToDouble(temperature_val) <= 90 || Convert.ToDouble(temperature_val) >= 105)
-                    {
-                        temperature_color = alert_color;
-                    }
-                    else
-                    {
-                        temperature_color = "#FF0CA5DE";
-                    }
-                }
-                else if (display_names[i].Attributes["displayName"].Value == "Systolic blood pressure")
-                {
-                    systolic_blood_pressure_val = curr_val;
-                    if (Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
-                        Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
-                    {
-                        blood_pressure_color = alert_color;
-                    }
-                    else
-                    {
-                        blood_pressure_color = "#FFF39320";
-                    }
-                }
-                else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
-                {
-                    diastolic_blood_pressure_val = curr_val;
-                    if (Convert.ToInt32(diastolic_blood_pressure_val) >= 110 || Convert.ToInt32(diastolic_blood_pressure_val) <= 60 ||
-                        Convert.ToInt32(systolic_blood_pressure_val) >= 160 || Convert.ToInt32(systolic_blood_pressure_val) <= 80)
-                    {
-                        blood_pressure_color = alert_color;
-                    }
-                    else
-                    {
-                        blood_pressure_color = "#FFF39320";
-                    }
-                }
-                else if (display_names[i].Attributes["displayName"].Value == "Mean blood pressure")
-                {
-
-                }
-                else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
-                {
-                    heartrate_val = curr_val;
-                    if (Convert.ToInt32(heartrate_val) <= 40 || Convert.ToInt32(heartrate_val) >= 150)
-                    {
-                        heartrate_color = alert_color;
-                    }
-                    else
-                    {
-                        heartrate_color = "Purple";
-                    }
-                }
-                else if (display_names[i].Attributes["displayName"].Value == "SpO2")
-                {
-                    oxygen_val = curr_val;
-                    if (Convert.ToInt32(oxygen_val) <= 90)
-                    {
-                        oxygen_color = alert_color;
-                    }
-                    else
-                    {
-                        oxygen_color = "#FF2ED813";
-                    }
-                }
-
-                UpdateUI();
-            }
-        }
-    
 
         public void ParseDataFromSocket(string data, int version){
               if(version == 2){
