@@ -30,10 +30,22 @@
         </VisualStateManager.VisualStateGroups>
 
         <StackPanel Padding="20 0 20 0" Margin="0" Orientation="Vertical">
-            <Button x:Name="revert_button" Click="ClickRevert" ClickMode="Press" Content="Revert" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top">
-                
+            <Button x:Name="revert_button" Click="ClickRevert" ClickMode="Press" Background="White" Content="Revert" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Button.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.ThemeDictionaries>
+                            <ResourceDictionary x:Key="Dark">
+                                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="LightGray"/>
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="White"/>
+                            </ResourceDictionary>
+                            <ResourceDictionary x:Key="Light">
+                                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Black"/>
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="LightGray"/>
+                            </ResourceDictionary>
+                        </ResourceDictionary.ThemeDictionaries>
+                    </ResourceDictionary>
+                </Button.Resources>
             </Button>
-
             <TextBlock Name="current_time" FontSize="50" Height="75" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Run Text="{x:Bind Path=current_time_val, Mode=OneWay}"/>
             </TextBlock>

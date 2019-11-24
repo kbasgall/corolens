@@ -157,11 +157,10 @@ namespace Vitals
         public MainPage()
         {
             this.InitializeComponent();
-            Debug.WriteLine("Hello");
             systolic_blood_pressure_val = diastolic_blood_pressure_val = heartrate_val = oxygen_val = temperature_val = blood_pressure_val = "0";
             //DataContext = vitalValues;
 
-            Thread t = new Thread(SimulateServer);
+            Thread t = new Thread(ExecuteServer);
             Thread t2 = new Thread(Clock);
             t2.Start();
             t.Start();
@@ -245,7 +244,7 @@ namespace Vitals
             // running the application.
             int data_version = 3;
             IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddr = ipHost.AddressList[0];
+            IPAddress ipAddr = IPAddress.Parse("35.2.162.213");
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
 
             // Creation TCP/IP Socket using
