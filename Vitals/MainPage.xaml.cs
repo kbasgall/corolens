@@ -248,8 +248,13 @@ namespace Vitals
 
                 Thread.Sleep(5000);
 
-                if (i == 7) i = 0;
-                else i++;
+                if (i == 7) {
+                    i = 0;
+                    version = 3;
+                }
+                else {
+                    i++;
+                }
             }
         }
 
