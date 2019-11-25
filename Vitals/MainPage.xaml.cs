@@ -241,7 +241,7 @@ namespace Vitals
             while (true)
             {
                 if (i == 4) {
-                    version = 4;
+                    version = 2;
                 }
                 Debug.WriteLine("Next file" + i);
                 ParseDataFromSocket(docs[i], version);
