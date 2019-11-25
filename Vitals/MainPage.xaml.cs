@@ -234,17 +234,21 @@ namespace Vitals
         }
         public void SimulateServer()
         {
-            String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml" };
+            String[] docs = { "test1.xml", "test2.xml", "test3.xml", "test4.xml", "testv2_1.txt", "testv2_2.txt", "testv2_3.txt", "testv2_4.txt" };
             string data = "";
             int i = 0;
+            int version = 3;
             while (true)
             {
+                if (i == 4) {
+                    version = 4;
+                }
                 Debug.WriteLine("Next file" + i);
-                ParseDataFromSocket(docs[i], 3);
+                ParseDataFromSocket(docs[i], version);
 
                 Thread.Sleep(5000);
 
-                if (i == 3) i = 0;
+                if (i == 7) i = 0;
                 else i++;
             }
         }
