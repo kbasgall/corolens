@@ -142,6 +142,10 @@
     <Content Include="test2.xml" />
     <Content Include="test3.xml" />
     <Content Include="test4.xml" />
+    <Content Include="testv2_1.txt" />
+    <Content Include="testv2_2.txt" />
+    <Content Include="testv2_3.txt" />
+    <Content Include="testv2_4.txt" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
