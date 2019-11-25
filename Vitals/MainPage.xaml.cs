@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Media;
+using System.IO.File;
 
 namespace Vitals
 {
@@ -341,8 +342,9 @@ namespace Vitals
 
         public void ParseDataFromSocket(string data, int version){
               if(version == 2){
+                string contents = ReadAllText(data);
                 List<string> piped = new List<string>();
-                string[] tokens = data.Split("OBX");
+                string[] tokens = contents.Split("OBX");
 
                 foreach (var word in tokens){
                   if(word[0] == '|')
