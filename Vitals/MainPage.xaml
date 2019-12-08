@@ -10,7 +10,7 @@
     >
 
     <Page.Background>
-        <AcrylicBrush TintColor="#000000" TintOpacity="0.1" BackgroundSource="HostBackdrop"/>
+        <AcrylicBrush TintColor="#000000" TintOpacity="{x:Bind Path=transparency_value, Mode=TwoWay}" BackgroundSource="HostBackdrop"/>
     </Page.Background>
 
     <Grid>
@@ -29,30 +29,89 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <StackPanel Padding="20 0 20 0" Margin="0" Orientation="Vertical">
-            <Button x:Name="revert_button" Click="ClickRevert" ClickMode="Press" Background="White" Content="Revert" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Button.Resources>
-                    <ResourceDictionary>
-                        <ResourceDictionary.ThemeDictionaries>
-                            <ResourceDictionary x:Key="Dark">
-                                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="LightGray"/>
-                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="White"/>
-                            </ResourceDictionary>
-                            <ResourceDictionary x:Key="Light">
-                                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Black"/>
-                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="LightGray"/>
-                            </ResourceDictionary>
-                        </ResourceDictionary.ThemeDictionaries>
-                    </ResourceDictionary>
-                </Button.Resources>
-            </Button>
-            <TextBlock Name="current_time" FontSize="50" Height="75" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <StackPanel Padding="20 0 20 50" Margin="0" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Padding="0 10 0 0">
+                <StackPanel Orientation="Horizontal" Padding="0 0 10 0"> 
+                    <Button Click="ShowPopupOffsetClicked" Background="White" Height="50" Width="50">
+                    <SymbolIcon Symbol="Setting"/>
+                </Button>
+                </StackPanel>
+                <Button x:Name="revert_button" Click="ClickRevert" ClickMode="Press" Height="50" Width="100" Background="White" Content="Revert" FontSize="25" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Button.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Dark">
+                                    <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="LightGray"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="White"/>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Light">
+                                    <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Black"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="LightGray"/>
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+                        </ResourceDictionary>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            <TextBlock Padding="0 0 0 0" Name="current_time" FontSize="50" Height="75" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Run Text="{x:Bind Path=current_time_val, Mode=OneWay}"/>
             </TextBlock>
         </StackPanel>
+        <Popup VerticalOffset="10" HorizontalOffset="200" x:Name="StandardPopup">
+            <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" 
+                Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
+                BorderThickness="2" >
 
-        <StackPanel x:Name="myPanel" Orientation="Vertical" Padding="20 70 0 0" VerticalAlignment="Top">
+                <StackPanel Padding="20 20 20 20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="Close" Click="ClosePopupClicked" HorizontalAlignment="Center"/>
 
+                    <TextBlock Text="Settings" FontSize="30" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Alerts" VerticalAlignment="Center" Padding="0 0 10 0"/>
+                        <CheckBox x:Name="toggleAlerts" HorizontalAlignment="Left" IsChecked="{x:Bind Path=toggle_alerts}" Checked="ToggleAlerts" Unchecked="ToggleAlerts"/>
+                    </StackPanel>
+                    <Slider x:Name="transparencySlider" Header="Transparency" ValueChanged="TransparencySlider"/>
+
+                    <TextBlock Text="Vital Alert Thresholds" FontSize="20" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
+                        <TextBlock Text="Heart Rate" Padding="0 0 10 0" VerticalAlignment="Center"/>
+                        <TextBox Name="bpm_min" PlaceholderText="min"/>
+                        <TextBox Name="bpm_max" PlaceholderText="max"/>
+                        <Button Name="bpm_alt" Content="Submit" Click="SubmitThresholds"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
+                        <TextBlock Text="Diastolic Blood Pressure" Padding="0 0 10 0" VerticalAlignment="Center"/>
+                        <TextBox Name="diastolic_bp_min" PlaceholderText="min"/>
+                        <TextBox Name="diastolic_bp_max" PlaceholderText="max"/>
+                        <Button Name="diastolic_bp" Content="Submit" Click="SubmitThresholds"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
+                        <TextBlock Text="Systolic Blood Pressure" Padding="0 0 10 0" VerticalAlignment="Center"/>
+                        <TextBox Name="systolic_bp_min" PlaceholderText="min"/>
+                        <TextBox Name="systolic_bp_max" PlaceholderText="max"/>
+                        <Button Name="systolic_bp" Content="Submit" Click="SubmitThresholds"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
+                        <TextBlock Text="Oxygen" Padding="0 0 10 0" VerticalAlignment="Center"/>
+                        <TextBox Name ="oxygen_min" PlaceholderText="min"/>
+                        <Button Name="oxygen_alt" Content="Submit" Click="SubmitThresholds"/> 
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
+                        <TextBlock Text="Temperature" Padding="0 0 10 0" VerticalAlignment="Center"/>
+                        <TextBox Name="temp_min" PlaceholderText="min"/>
+                        <TextBox Name="temp_max" PlaceholderText="max"/>
+                        <Button Name="temp_alt" Content="Submit" Click="SubmitThresholds"/>
+                    </StackPanel>
+                    
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <StackPanel x:Name="myPanel" Orientation="Vertical" Padding="20 100 0 0" VerticalAlignment="Top">
             <Button x:Name="heartrate_button" Click="OnClickHR" ClickMode="Press" Padding="0 0 20 0">
                 <Button.Background>
                     <SolidColorBrush Opacity="0" />

@@ -29,8 +29,8 @@ namespace Vitals
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         // Upper and lower alert ranges for temperature, diastolic blood pressure, systolic blood pressure, heart rate, Sp02
-        public static int temp_alert_lower_val = 90;
-        public static int temp_alert_upper_val = 105;
+        public static double temp_alert_lower_val = 90;
+        public static double temp_alert_upper_val = 105;
         public static int bp_diast_alert_lower_val = 60;
         public static int bp_diast_alert_upper_val = 110;
         public static int bp_syst_alert_lower_val = 80;
@@ -49,11 +49,16 @@ namespace Vitals
         private String _current_time_val;
 
         // Colors for UI display
-        public static String alert_color = "White";
+        public static String alert_color = "Yellow";
         private String _heartrate_color = "HotPink";
         private String _oxygen_color = "#FF2ED813";
         private String _temperature_color = "#FF0CA5DE";
         private String _blood_pressure_color = "#FFF39320";
+
+        // Settings
+        private bool toggle_alerts = false;
+        private double transparency_value = 0.1;
+
         public String current_time_val
         {
             get { return _current_time_val; }
@@ -183,7 +188,6 @@ namespace Vitals
         {
             blood_pressure_val = systolic_blood_pressure_val + "/" + diastolic_blood_pressure_val;
             //DataContext = vitalValues;
-            Debug.WriteLine("Updated UI.....heartrate " + heartrate_val);
         }
 
         public void Clock()
@@ -192,6 +196,101 @@ namespace Vitals
             {
                 current_time_val = DateTime.Now.ToString("h:mm:ss tt");
             }
+        }
+
+        private void TransparencySlider(object sender, RoutedEventArgs e)
+        {
+            Slider slider = sender as Slider;
+            if(slider != null)
+            {
+                transparency_value = slider.Value/100;
+                Debug.WriteLine(transparency_value);
+                OnPropertyChanged("transparency_value");
+            }
+        }
+
+        private void SubmitThresholds(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+
+            if (button == null) return;
+
+            if (button.Name == "bpm_alt")
+            {
+                if (bpm_min.Text != "")
+                {
+                    int.TryParse(bpm_min.Text, out hr_alert_lower_val);
+                }
+                if (bpm_max.Text != "")
+                {
+                    int.TryParse(bpm_max.Text, out hr_alert_upper_val);
+                }
+            }
+
+            if (button.Name == "diastolic_bp")
+            {
+                if (diastolic_bp_min.Text != "") {
+                    int.TryParse(diastolic_bp_min.Text, out bp_diast_alert_lower_val);
+                }
+                if (diastolic_bp_max.Text != "")
+                {
+                    int.TryParse(diastolic_bp_max.Text, out bp_diast_alert_upper_val);
+                }
+            }
+
+            else if(button.Name == "systolic_bp")
+            {
+                if (systolic_bp_min.Text != "")
+                {
+                    int.TryParse(systolic_bp_min.Text, out bp_syst_alert_lower_val);
+                    bp_syst_alert_lower_val = Convert.ToInt32(systolic_bp_min.Text);
+                }
+                if (systolic_bp_max.Text != "")
+                {
+                    int.TryParse(systolic_bp_max.Text, out bp_syst_alert_upper_val);
+                }
+            }
+
+            else if (button.Name == "oxygen_alt")
+            {
+                if (oxygen_min.Text != "")
+                {
+                    int.TryParse(oxygen_min.Text, out sp02_alert_lower_val);
+                }
+            }
+
+            else if (button.Name == "temp_alt")
+            {
+                if (temp_min.Text != "")
+                {
+                    double.TryParse(temp_min.Text, out temp_alert_lower_val);
+                    temp_alert_lower_val = Convert.ToDouble(temp_min.Text);
+                }
+                if (temp_max.Text != "")
+                {
+                    double.TryParse(temp_max.Text, out temp_alert_upper_val);
+                }
+            }
+        }
+        // Handles the Click event on the Button inside the Popup control and 
+        // closes the Popup. 
+        private void ClosePopupClicked(object sender, RoutedEventArgs e)
+        {
+            // if the Popup is open, then close it 
+            if (StandardPopup.IsOpen) { StandardPopup.IsOpen = false; }
+        }
+
+        private void ToggleAlerts(object sender, RoutedEventArgs e)
+        {
+            toggle_alerts = !toggle_alerts;
+            Debug.WriteLine("Toggled! toggle_alerts is: ", toggle_alerts.ToString());
+        }
+
+        // Handles the Click event on the Button on the page and opens the Popup. 
+        private void ShowPopupOffsetClicked(object sender, RoutedEventArgs e)
+        {
+            // open the Popup if it isn't open already 
+            if (!StandardPopup.IsOpen) { StandardPopup.IsOpen = true; }
         }
 
         void ClickRevert(object sender, RoutedEventArgs e)
@@ -246,7 +345,7 @@ namespace Vitals
                 Debug.WriteLine("Next file" + i);
                 ParseDataFromSocket(docs[i], version);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(3000);
 
                 if (i == 7) {
                     i = 0;
@@ -357,7 +456,7 @@ namespace Vitals
                       double fahrenheit = ((Double.Parse(fields[5]) * 9) / 5) + 32;
                       String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
                       temperature_val = result;
-                      if(Convert.ToDouble(temperature_val) <= temp_alert_lower_val || Convert.ToDouble(temperature_val) >= temp_alert_upper_val)
+                      if(toggle_alerts && (Convert.ToDouble(temperature_val) <= temp_alert_lower_val || Convert.ToDouble(temperature_val) >= temp_alert_upper_val))
                       {
                           temperature_color = alert_color;
                       }
@@ -368,7 +467,7 @@ namespace Vitals
                     }
                     else if(fields[3] == "19"){
                       heartrate_val = fields[5];
-                      if(Convert.ToInt32(heartrate_val) <= hr_alert_lower_val || Convert.ToInt32(heartrate_val) >= hr_alert_upper_val)
+                      if(toggle_alerts && Convert.ToInt32(heartrate_val) <= hr_alert_lower_val || Convert.ToInt32(heartrate_val) >= hr_alert_upper_val)
                       {
                           heartrate_color = alert_color;
                       }
@@ -379,8 +478,8 @@ namespace Vitals
                     }
                     else if(fields[3] == "2"){
                       systolic_blood_pressure_val = fields[5];
-                      if (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
-                          Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
+                      if (toggle_alerts && (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                          Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val))
                       {
                           blood_pressure_color = alert_color;
                       }
@@ -391,8 +490,8 @@ namespace Vitals
                     }
                     else if(fields[3] == "3"){
                       diastolic_blood_pressure_val = fields[5];
-                      if(Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
-                          Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
+                      if(toggle_alerts && (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                          Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val))
                       {
                           blood_pressure_color = alert_color;
                       }
@@ -406,7 +505,7 @@ namespace Vitals
                     }
                     else if(fields[3] == "14"){
                       oxygen_val = fields[5];
-                      if(Convert.ToInt32(oxygen_val) <= sp02_alert_lower_val)
+                      if(toggle_alerts && Convert.ToInt32(oxygen_val) <= sp02_alert_lower_val)
                       {
                           oxygen_color = alert_color;
                       }
@@ -439,7 +538,7 @@ namespace Vitals
                         double fahrenheit = ((Double.Parse(curr_val) * 9) / 5) + 32;
                         String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
                         temperature_val = result;
-                        if(Convert.ToDouble(temperature_val) <= temp_alert_lower_val || Convert.ToDouble(temperature_val) >= temp_alert_upper_val)
+                        if(toggle_alerts && (Convert.ToDouble(temperature_val) <= temp_alert_lower_val || Convert.ToDouble(temperature_val) >= temp_alert_upper_val))
                         {
                             temperature_color = alert_color;
                         }
@@ -451,8 +550,8 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "Systolic blood pressure")
                     {
                         systolic_blood_pressure_val = curr_val;
-                        if (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
-                            Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
+                        if (toggle_alerts && (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                            Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val))
                         {
                             blood_pressure_color = alert_color;
                         }
@@ -464,8 +563,8 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "Diastolic blood pressure")
                     {
                         diastolic_blood_pressure_val = curr_val;
-                        if(Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
-                            Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val)
+                        if(toggle_alerts && (Convert.ToInt32(diastolic_blood_pressure_val) >= bp_diast_alert_upper_val || Convert.ToInt32(diastolic_blood_pressure_val) <= bp_diast_alert_lower_val ||
+                            Convert.ToInt32(systolic_blood_pressure_val) >= bp_syst_alert_upper_val || Convert.ToInt32(systolic_blood_pressure_val) <= bp_syst_alert_lower_val))
                         {
                             blood_pressure_color = alert_color;
                         }
@@ -481,7 +580,7 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "Pulse rate")
                     {
                         heartrate_val = curr_val;
-                        if(Convert.ToInt32(heartrate_val) <= hr_alert_lower_val || Convert.ToInt32(heartrate_val) >= hr_alert_upper_val)
+                        if(toggle_alerts && (Convert.ToInt32(heartrate_val) <= hr_alert_lower_val || Convert.ToInt32(heartrate_val) >= hr_alert_upper_val))
                         {
                             heartrate_color = alert_color;
                         }
@@ -493,7 +592,7 @@ namespace Vitals
                     else if (display_names[i].Attributes["displayName"].Value == "SpO2")
                     {
                         oxygen_val = curr_val;
-                        if(Convert.ToInt32(oxygen_val) <= sp02_alert_lower_val)
+                        if(toggle_alerts && Convert.ToInt32(oxygen_val) <= sp02_alert_lower_val)
                         {
                             oxygen_color = alert_color;
                         }
@@ -506,5 +605,5 @@ namespace Vitals
                 }
               }
             }
-        }
+    }
 }
