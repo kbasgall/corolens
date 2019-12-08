@@ -116,7 +116,7 @@
                 <Button.Background>
                     <SolidColorBrush Opacity="0" />
                 </Button.Background>
-                <TextBlock Name="heartrate" FontSize="100" Foreground="{x:Bind Path=heartrate_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock Name="heartrate" FontSize="100" Foreground="{x:Bind Path=heartrate_color, Mode=OneWay}" Height="120" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Run Text="{x:Bind Path=heartrate_val, Mode=OneWay}"/>
                     <Run Text="bpm" FontSize="40"/>
                 </TextBlock>
@@ -126,7 +126,7 @@
                 <Button.Background>
                     <SolidColorBrush Opacity="0" />
                 </Button.Background>
-                <TextBlock Name="blood_pressure" FontSize="100" VariableSizedWrapGrid.RowSpan="2" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock Name="blood_pressure" FontSize="100" VariableSizedWrapGrid.RowSpan="2" Height="120" Foreground="{x:Bind Path=blood_pressure_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Run Text="{x:Bind Path=blood_pressure_val, Mode=OneWay}"/>
                     <Run Text="mmHg" FontSize="40"/>
                 </TextBlock>
@@ -136,7 +136,7 @@
                 <Button.Background>
                     <SolidColorBrush Opacity="0" />
                 </Button.Background>
-                <TextBlock Name="oxygen_level" FontSize="100" Foreground="{x:Bind Path=oxygen_color, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock Name="oxygen_level" FontSize="100" Foreground="{x:Bind Path=oxygen_color, Mode=OneWay}"  Height="120" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=oxygen_val, Mode=OneWay}"/>
                 <Run Text="%" FontSize="40"/>
                 </TextBlock>
@@ -146,7 +146,7 @@
                 <Button.Background>
                     <SolidColorBrush Opacity="0" />
                 </Button.Background>
-                <TextBlock Name="temperature" FontSize="100" Foreground="{x:Bind Path=temperature_color, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                <TextBlock Name="temperature" FontSize="100" Foreground="{x:Bind Path=temperature_color, Mode=OneWay}"  Height="120" HorizontalAlignment="Left" VerticalAlignment="Stretch">
                 <Run Text="{x:Bind Path=temperature_val, Mode=OneWay}"/>
                 <Run Text="°F" FontSize="40"/>
                 </TextBlock>
