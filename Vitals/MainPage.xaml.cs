@@ -472,12 +472,24 @@ namespace Vitals
                         {
                             double fahrenheit = ((Double.Parse(fields[5]) * 9) / 5) + 32;
                             String result = string.Format("{0:0.0}", Math.Truncate(fahrenheit * 10) / 10);
-                            if (toggle_alerts && (Convert.ToDouble(result) <= temp_alert_lower_val || Convert.ToDouble(result) >= temp_alert_upper_val))
+
+                            // Value too high
+                            if (toggle_alerts && Convert.ToDouble(result) >= temp_alert_upper_val)
                             {
                                 char up_arrow = '\u2191';
                                 result = result.Insert(0, up_arrow + " ");
                                 temperature_color = alert_color;
                             }
+
+                            // Value too low
+                            else if(toggle_alerts && Convert.ToDouble(result) <= temp_alert_lower_val)
+                            {
+                                char down_arrow = '\u2193';
+                                result = result.Insert(0, down_arrow + " ");
+                                temperature_color = alert_color;
+                            }
+
+                            // Value in range
                             else
                             {
                                 temperature_color = "#FF0CA5DE";
@@ -487,28 +499,52 @@ namespace Vitals
                         else if (fields[3] == "19")
                         {
                             String result = fields[5];
-                            if (toggle_alerts && Convert.ToInt32(result) <= hr_alert_lower_val || Convert.ToInt32(result) >= hr_alert_upper_val)
+
+                            // Value too high
+                            if (toggle_alerts && Convert.ToInt32(result) >= hr_alert_upper_val)
                             {
                                 char up_arrow = '\u2191';
                                 result = result.Insert(0, up_arrow + " ");
                                 heartrate_color = alert_color;
                             }
+
+                            // Value too low
+                            else if(toggle_alerts && Convert.ToInt32(result) <= hr_alert_lower_val)
+                            {
+                                char down_arrow = '\u2193';
+                                result = result.Insert(0, down_arrow + " ");
+                                heartrate_color = alert_color;
+                            }
+
+                            // Value in range
                             else
                             {
                                 heartrate_color = "HotPink";
                             }
+
                             heartrate_val = result;
                         }
                         else if (fields[3] == "2")
                         {
                             String result = fields[5];
-                            if (toggle_alerts && (Convert.ToInt32(result) >= bp_diast_alert_upper_val || Convert.ToInt32(result) <= bp_diast_alert_lower_val ||
-                                Convert.ToInt32(result) >= bp_syst_alert_upper_val || Convert.ToInt32(result) <= bp_syst_alert_lower_val))
+
+                            // Value too high
+                            if (toggle_alerts && (Convert.ToInt32(result) >= bp_diast_alert_upper_val || Convert.ToInt32(result) >= bp_syst_alert_upper_val))
                             {
                                 char up_arrow = '\u2191';
                                 result = result.Insert(0, up_arrow + " ");
                                 blood_pressure_color = alert_color;
                             }
+
+                            // Value too low
+                            else if(toggle_alerts && (Convert.ToInt32(result) <= bp_diast_alert_lower_val || Convert.ToInt32(result) <= bp_syst_alert_lower_val))
+                            {
+                                char down_arrow = '\u2193';
+                                result = result.Insert(0, down_arrow + " ");
+                                blood_pressure_color = alert_color;
+                            }
+
+                            // Value in range
                             else
                             {
                                 blood_pressure_color = "#FFF39320";
@@ -518,13 +554,23 @@ namespace Vitals
                         else if (fields[3] == "3")
                         {
                             String result = fields[5];
-                            if (toggle_alerts && (Convert.ToInt32(result) >= bp_diast_alert_upper_val || Convert.ToInt32(result) <= bp_diast_alert_lower_val ||
-                                Convert.ToInt32(result) >= bp_syst_alert_upper_val || Convert.ToInt32(result) <= bp_syst_alert_lower_val))
+
+                            // Value too high
+                            if (toggle_alerts && (Convert.ToInt32(result) >= bp_diast_alert_upper_val || Convert.ToInt32(result) >= bp_syst_alert_upper_val))
                             {
                                 char up_arrow = '\u2191';
                                 result = result.Insert(0, up_arrow + " ");
                                 blood_pressure_color = alert_color;
                             }
+
+                            // Value too low
+                            else if (toggle_alerts && (Convert.ToInt32(result) <= bp_diast_alert_lower_val || Convert.ToInt32(result) <= bp_syst_alert_lower_val))
+                            {
+                                char down_arrow = '\u2193';
+                                result = result.Insert(0, down_arrow + " ");
+                                blood_pressure_color = alert_color;
+                            }
+
                             else
                             {
                                 blood_pressure_color = "#FFF39320";
@@ -534,12 +580,16 @@ namespace Vitals
                         else if (fields[3] == "14")
                         {
                             String result = fields[5];
+
+                            // Value too low
                             if (toggle_alerts && Convert.ToInt32(result) <= sp02_alert_lower_val)
                             {
-                                char up_arrow = '\u2191';
-                                result = result.Insert(0, up_arrow + " ");
+                                char down_arrow = '\u2193';
+                                result = result.Insert(0, down_arrow + " ");
                                 oxygen_color = alert_color;
                             }
+
+                            // Value in range
                             else
                             {
                                 oxygen_color = "#FF2ED813";
