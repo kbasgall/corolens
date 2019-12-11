@@ -1,4 +1,5 @@
 using System;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using System.Xml;
 using System.Threading;
@@ -31,15 +32,15 @@ namespace Vitals
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         // Upper and lower alert ranges for temperature, diastolic blood pressure, systolic blood pressure, heart rate, Sp02
-        public static double temp_alert_lower_val = 90;
-        public static double temp_alert_upper_val = 105;
-        public static int bp_diast_alert_lower_val = 60;
-        public static int bp_diast_alert_upper_val = 110;
-        public static int bp_syst_alert_lower_val = 80;
-        public static int bp_syst_alert_upper_val = 160;
-        public static int hr_alert_lower_val = 40;
-        public static int hr_alert_upper_val = 150;
-        public static int sp02_alert_lower_val = 90;
+        public double temp_alert_lower_val = 90;
+        public double temp_alert_upper_val = 105;
+        public int bp_diast_alert_lower_val = 60;
+        public int bp_diast_alert_upper_val = 110;
+        public int bp_syst_alert_lower_val = 80;
+        public int bp_syst_alert_upper_val = 160;
+        public int hr_alert_lower_val = 40;
+        public int hr_alert_upper_val = 150;
+        public int sp02_alert_lower_val = 90;
 
         // Current vital readings
         private String _systolic_blood_pressure_val;
@@ -213,6 +214,15 @@ namespace Vitals
             }
         }
 
+        private void ThresholdTextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+
+            if (textBox == null) return;
+            Debug.WriteLine(textBox.Background);
+            textBox.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 99));
+        }
+
         private void SubmitThresholds(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -224,12 +234,12 @@ namespace Vitals
                 if (bpm_min.Text != "")
                 {
                     int.TryParse(bpm_min.Text, out hr_alert_lower_val);
-                    bpm_min.Text = String.Empty; // todo - better solution?
+                    bpm_min.Background = new SolidColorBrush(Colors.White);
                 }
                 if (bpm_max.Text != "")
                 {
                     int.TryParse(bpm_max.Text, out hr_alert_upper_val);
-                    bpm_max.Text = String.Empty;
+                    bpm_max.Background = new SolidColorBrush(Colors.White);
                 }
 
             }
@@ -239,10 +249,12 @@ namespace Vitals
                 if (diastolic_bp_min.Text != "")
                 {
                     int.TryParse(diastolic_bp_min.Text, out bp_diast_alert_lower_val);
+                    diastolic_bp_min.Background = new SolidColorBrush(Colors.White);
                 }
                 if (diastolic_bp_max.Text != "")
                 {
                     int.TryParse(diastolic_bp_max.Text, out bp_diast_alert_upper_val);
+                    diastolic_bp_max.Background = new SolidColorBrush(Colors.White);
                 }
             }
 
@@ -251,11 +263,12 @@ namespace Vitals
                 if (systolic_bp_min.Text != "")
                 {
                     int.TryParse(systolic_bp_min.Text, out bp_syst_alert_lower_val);
-                    bp_syst_alert_lower_val = Convert.ToInt32(systolic_bp_min.Text);
+                    systolic_bp_min.Background = new SolidColorBrush(Colors.White);
                 }
                 if (systolic_bp_max.Text != "")
                 {
                     int.TryParse(systolic_bp_max.Text, out bp_syst_alert_upper_val);
+                    systolic_bp_max.Background = new SolidColorBrush(Colors.White);
                 }
             }
 
@@ -264,6 +277,7 @@ namespace Vitals
                 if (oxygen_min.Text != "")
                 {
                     int.TryParse(oxygen_min.Text, out sp02_alert_lower_val);
+                    oxygen_min.Background = new SolidColorBrush(Colors.White);
                 }
             }
 
@@ -272,11 +286,12 @@ namespace Vitals
                 if (temp_min.Text != "")
                 {
                     double.TryParse(temp_min.Text, out temp_alert_lower_val);
-                    temp_alert_lower_val = Convert.ToDouble(temp_min.Text);
+                    temp_min.Background = new SolidColorBrush(Colors.White);
                 }
                 if (temp_max.Text != "")
                 {
                     double.TryParse(temp_max.Text, out temp_alert_upper_val);
+                    temp_max.Background = new SolidColorBrush(Colors.White);
                 }
             }
         }
@@ -746,6 +761,11 @@ namespace Vitals
                     UpdateUI();
                 }
             }
+        }
+
+        private void bpm_min_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

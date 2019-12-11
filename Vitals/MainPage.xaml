@@ -75,35 +75,35 @@
                     <TextBlock Text="Vital Alert Thresholds" FontSize="20" FontWeight="SemiBold"/>
                     <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
                         <TextBlock Text="Heart Rate" Padding="0 0 10 0" VerticalAlignment="Center"/>
-                        <TextBox Name="bpm_min" PlaceholderText="min"/>
-                        <TextBox Name="bpm_max" PlaceholderText="max"/>
+                        <TextBox Name="bpm_min" Text="{x:Bind Path=hr_alert_lower_val}" TextChanged="ThresholdTextChanged"/>
+                        <TextBox Name="bpm_max" Text="{x:Bind Path=hr_alert_upper_val}" TextChanged="ThresholdTextChanged"/>
                         <Button Name="bpm_alt" Content="Submit" Click="SubmitThresholds"/>
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
                         <TextBlock Text="Diastolic Blood Pressure" Padding="0 0 10 0" VerticalAlignment="Center"/>
-                        <TextBox Name="diastolic_bp_min" PlaceholderText="min"/>
-                        <TextBox Name="diastolic_bp_max" PlaceholderText="max"/>
+                        <TextBox Name="diastolic_bp_min" Text="{x:Bind Path=bp_diast_alert_lower_val}" TextChanged="ThresholdTextChanged"/>
+                        <TextBox Name="diastolic_bp_max" Text="{x:Bind Path=bp_diast_alert_upper_val}" TextChanged="ThresholdTextChanged"/>
                         <Button Name="diastolic_bp" Content="Submit" Click="SubmitThresholds"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
                         <TextBlock Text="Systolic Blood Pressure" Padding="0 0 10 0" VerticalAlignment="Center"/>
-                        <TextBox Name="systolic_bp_min" PlaceholderText="min"/>
-                        <TextBox Name="systolic_bp_max" PlaceholderText="max"/>
+                        <TextBox Name="systolic_bp_min" Text="{x:Bind Path=bp_syst_alert_lower_val}" TextChanged="ThresholdTextChanged"/>
+                        <TextBox Name="systolic_bp_max" Text="{x:Bind Path=bp_syst_alert_upper_val}" TextChanged="ThresholdTextChanged"/>
                         <Button Name="systolic_bp" Content="Submit" Click="SubmitThresholds"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
                         <TextBlock Text="Oxygen" Padding="0 0 10 0" VerticalAlignment="Center"/>
-                        <TextBox Name ="oxygen_min" PlaceholderText="min"/>
+                        <TextBox Name ="oxygen_min"  Text="{x:Bind Path=sp02_alert_lower_val}" TextChanged="ThresholdTextChanged"/>
                         <Button Name="oxygen_alt" Content="Submit" Click="SubmitThresholds"/> 
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Padding="0 0 0 10">
                         <TextBlock Text="Temperature" Padding="0 0 10 0" VerticalAlignment="Center"/>
-                        <TextBox Name="temp_min" PlaceholderText="min"/>
-                        <TextBox Name="temp_max" PlaceholderText="max"/>
+                        <TextBox Name="temp_min"  Text="{x:Bind Path=temp_alert_lower_val}" TextChanged="ThresholdTextChanged"/>
+                        <TextBox Name="temp_max"  Text="{x:Bind Path=temp_alert_upper_val}" TextChanged="ThresholdTextChanged"/>
                         <Button Name="temp_alt" Content="Submit" Click="SubmitThresholds"/>
                     </StackPanel>
                     
