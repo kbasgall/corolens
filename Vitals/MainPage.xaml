@@ -68,7 +68,7 @@
                     <TextBlock Text="Settings" FontSize="30" FontWeight="Bold"/>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Alerts" VerticalAlignment="Center" Padding="0 0 10 0"/>
-                        <CheckBox x:Name="toggleAlerts" HorizontalAlignment="Left" IsChecked="{x:Bind Path=toggle_alerts}" Checked="ToggleAlerts" Unchecked="ToggleAlerts"/>
+                        <CheckBox x:Name="toggleAlerts" HorizontalAlignment="Left" IsChecked="{x:Bind Path=toggle_alerts}" Checked="AlertsOn" Unchecked="AlertsOff"/>
                     </StackPanel>
                     <Slider x:Name="transparencySlider" Header="Transparency" ValueChanged="TransparencySlider"/>
 
